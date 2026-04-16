@@ -1,0 +1,135 @@
+---
+/**
+ * ProjectCard.astro
+ * Individual project card with 3D proximity glow border effect.
+ * Uses a minimal client script to track mouse coords → CSS custom properties.
+ * The ::before pseudo-element renders a radial gradient glow that follows the cursor.
+ * On hover, inner content lifts via translateZ for extruded depth.
+ */
+import type { Project } from "../data/projects";
+import GithubLogoLight from "phosphor-astro/GithubLogoLight.astro";
+import ArrowSquareOutLight from "phosphor-astro/ArrowSquareOutLight.astro";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<div class="card-perspective" data-glow-card>
+  <!-- Glow border layer (anchored to base) -->
+  <div class="glow-card">
+    <!-- Inner content (lifts on hover) -->
+    <div class="glow-card-content">
+      <!-- Project title -->
+      <h3 class="font-mono text-lg font-semibold text-text-primary mb-3 tracking-tight">
+        {project.title}
+      </h3>
+
+      <!-- Description -->
+      <p class="text-sm text-text-secondary leading-relaxed mb-5">
+        {project.description}
+      </p>
+
+      <!-- Tech tags -->
+      <div class="flex flex-wrap gap-2 mb-5">
+        {project.tech.map((tech) => (
+          <span class="inline-block px-2.5 py-1 rounded-md text-xs font-mono text-accent bg-accent-dim border border-accent/10">
+            {tech}
+          </span>
+        ))}
+      </div>
+
+      <!-- Links -->
+      <div class="flex items-center gap-4 mt-auto pt-4 border-t border-border-dim">
+        {project.github && project.github !== "#" && (
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 text-sm text-text-muted font-mono transition-colors duration-200 hover:text-accent"
+          >
+            <GithubLogoLight class="w-4 h-4" />
+            Source
+          </a>
+        )}
+        {project.github === "#" && (
+          <span class="inline-flex items-center gap-1.5 text-sm text-text-muted/50 font-mono cursor-not-allowed">
+            <GithubLogoLight class="w-4 h-4" />
+            Private
+          </span>
+        )}
+        {project.demo && (
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 text-sm text-text-muted font-mono transition-colors duration-200 hover:text-accent"
+          >
+            <ArrowSquareOutLight class="w-4 h-4" />
+            Live Demo
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ─── 3D Card Wrapper ─── */
+  .card-perspective {
+    perspective: 1000px;
+  }
+
+  /* ─── Glow Card (base layer with border effect) ─── */
+  .glow-card {
+    position: relative;
+    border-radius: 1rem;
+    padding: 1px; /* Border thickness */
+    background: var(--color-border-dim);
+    transition: background 0.4s ease;
+    overflow: hidden;
+  }
+
+  /* Radial gradient glow — tracks cursor via CSS custom properties */
+  .glow-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      var(--color-accent-glow),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    will-change: opacity;
+  }
+
+  .glow-card:hover::before {
+    opacity: 1;
+  }
+
+  /* ─── Inner Content (lifts on hover for 3D depth) ─── */
+  .glow-card-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    border-radius: calc(1rem - 1px);
+    background: var(--color-surface-card);
+    padding: 1.5rem;
+    min-height: 100%;
+    transition: transform 0.4s ease, background 0.4s ease;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .glow-card:hover .glow-card-content {
+    transform: translateZ(16px);
+    background: var(--color-surface-hover);
+  }
+</style>

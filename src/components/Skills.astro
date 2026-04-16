@@ -1,0 +1,81 @@
+---
+/**
+ * Skills.astro
+ * Skills section with categorized lists inside styled tiles/cards.
+ * Each category gets its own bordered card matching the project card aesthetic.
+ */
+import { skillCategories } from "../data/skills";
+---
+
+<section id="stack" class="relative py-20 sm:py-28">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Section header -->
+    <div class="mb-14">
+      <h2 class="font-mono text-sm text-text-muted tracking-widest uppercase mb-3">
+        // skills
+      </h2>
+      <p class="text-2xl sm:text-3xl font-mono font-semibold text-text-primary">
+        Tools & Technologies
+      </p>
+      <div class="mt-4 w-16 h-px bg-accent/40"></div>
+    </div>
+
+    <!-- Skills grid: each category in its own card -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {skillCategories.map((category) => (
+        <div class="skill-tile group">
+          <div class="skill-tile-inner">
+            <h3 class="font-mono text-xs font-semibold text-accent tracking-widest uppercase mb-5 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent/60"></span>
+              {category.title}
+            </h3>
+            <ul class="space-y-2.5">
+              {category.items.map((item) => (
+                <li class="text-sm text-text-secondary flex items-center gap-2.5 skill-item">
+                  <span class="w-1 h-1 rounded-full bg-border-dim shrink-0 transition-colors duration-200"></span>
+                  <span class="transition-colors duration-200">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ─── Skill Tile (matches project card aesthetic) ─── */
+  .skill-tile {
+    position: relative;
+    border-radius: 1rem;
+    padding: 1px;
+    background: var(--color-border-dim);
+    transition: background 0.4s ease;
+  }
+
+  .skill-tile:hover {
+    background: var(--color-accent-glow);
+  }
+
+  .skill-tile-inner {
+    border-radius: calc(1rem - 1px);
+    background: var(--color-surface-card);
+    padding: 1.5rem;
+    height: 100%;
+    transition: background 0.4s ease;
+  }
+
+  .skill-tile:hover .skill-tile-inner {
+    background: var(--color-surface-hover);
+  }
+
+  /* Highlight list items on card hover */
+  .skill-tile:hover .skill-item span:first-child {
+    background-color: var(--color-accent);
+  }
+
+  .skill-tile:hover .skill-item span:last-child {
+    color: var(--color-text-primary);
+  }
+</style>

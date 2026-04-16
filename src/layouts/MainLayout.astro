@@ -1,0 +1,58 @@
+---
+/**
+ * MainLayout.astro
+ * Base layout with full A11y metadata, Google Fonts, global styles,
+ * mouse-following glow effect, and fixed navigation.
+ */
+import Navbar from "../components/Navbar.astro";
+import MouseGlow from "../components/MouseGlow.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Skye Ibrahim — Full-Stack Developer & Data Engineer. Building reliable, data-centric systems that prioritize performance, maintainability, and clarity.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#09090b" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="author" content="Skye Ibrahim" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Fonts: Inter + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen">
+    <MouseGlow />
+    <Navbar />
+    <slot />
+  </body>
+</html>
+
+<style>
+  @import "../styles/global.css";
+</style>

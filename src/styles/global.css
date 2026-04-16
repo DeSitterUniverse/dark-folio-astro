@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* ─── Design System ─── */
+@theme {
+  /* Surface colors — deep black/dark gray */
+  --color-surface: #09090b;
+  --color-surface-card: #111113;
+  --color-surface-hover: #1a1a1f;
+  --color-border: #27272a;
+  --color-border-dim: rgba(39, 39, 42, 0.5);
+
+  /* Text colors */
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  /* Accent — purple/violet */
+  --color-accent: #a78bfa;
+  --color-accent-dim: rgba(167, 139, 250, 0.10);
+  --color-accent-glow: rgba(167, 139, 250, 0.25);
+  --color-accent-bright: #c4b5fd;
+
+  /* Fonts */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}
+
+/* ─── Base Reset & Global Styles ─── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ─── Selection Styling ─── */
+::selection {
+  background-color: var(--color-accent-dim);
+  color: var(--color-accent);
+}
+
+/* ─── Scrollbar Styling ─── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ─── Focus Visible ─── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

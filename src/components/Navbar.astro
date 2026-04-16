@@ -1,0 +1,50 @@
+---
+/**
+ * Navbar.astro
+ * Fixed top navigation with smooth scroll links and blur backdrop.
+ */
+import GithubLogoLight from "phosphor-astro/GithubLogoLight.astro";
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 nav-bar" id="navbar">
+  <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+    <!-- Logo / Name -->
+    <a href="#intro" class="font-mono text-sm font-semibold text-text-primary tracking-tight hover:text-accent transition-colors duration-200">
+      SI<span class="text-accent">.</span>
+    </a>
+
+    <!-- Nav Links -->
+    <div class="flex items-center gap-6">
+      <a href="#about" class="nav-link font-mono text-xs text-text-muted tracking-wide uppercase transition-colors duration-200 hover:text-accent">
+        About
+      </a>
+      <a href="#stack" class="nav-link font-mono text-xs text-text-muted tracking-wide uppercase transition-colors duration-200 hover:text-accent">
+        Skills
+      </a>
+      <a href="#projects" class="nav-link font-mono text-xs text-text-muted tracking-wide uppercase transition-colors duration-200 hover:text-accent">
+        Projects
+      </a>
+      <a href="#connect" class="nav-link font-mono text-xs text-text-muted tracking-wide uppercase transition-colors duration-200 hover:text-accent">
+        Contact
+      </a>
+      <a
+        href="https://github.com/DeSitterUniverse"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-text-muted hover:text-accent transition-colors duration-200"
+        aria-label="GitHub"
+      >
+        <GithubLogoLight class="w-4 h-4" />
+      </a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav-bar {
+    background: rgba(9, 9, 11, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(39, 39, 42, 0.3);
+  }
+</style>

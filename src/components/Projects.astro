@@ -1,0 +1,50 @@
+---
+/**
+ * Projects.astro
+ * Project showcase section with 3D glow cards.
+ * Contains the minimal client-side script for mouse tracking.
+ */
+import { projects } from "../data/projects";
+import ProjectCard from "./ProjectCard.astro";
+---
+
+<section id="projects" class="relative py-24 sm:py-32">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Section header -->
+    <div class="mb-16">
+      <h2 class="font-mono text-sm text-text-muted tracking-widest uppercase mb-3">
+        // projects
+      </h2>
+      <p class="text-2xl sm:text-3xl font-mono font-semibold text-text-primary">
+        Featured Work
+      </p>
+      <div class="mt-4 w-16 h-px bg-accent/40"></div>
+    </div>
+
+    <!-- Project grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {projects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- 
+  Minimal client-side script: mouse coordinate tracking for glow effect.
+  This is the ONLY JS on the page — passes cursor position to CSS custom properties.
+-->
+<script>
+  document.querySelectorAll<HTMLElement>("[data-glow-card]").forEach((card) => {
+    const glowEl = card.querySelector<HTMLElement>(".glow-card");
+    if (!glowEl) return;
+
+    card.addEventListener("mousemove", (e: MouseEvent) => {
+      const rect = glowEl.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      glowEl.style.setProperty("--mouse-x", `${x}px`);
+      glowEl.style.setProperty("--mouse-y", `${y}px`);
+    });
+  });
+</script>

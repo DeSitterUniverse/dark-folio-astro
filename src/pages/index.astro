@@ -1,17 +1,20 @@
 ---
-
+/**
+ * index.astro
+ * Single-page portfolio homepage composing all sections.
+ */
+import MainLayout from "../layouts/MainLayout.astro";
+import Intro from "../components/Intro.astro";
+import Skills from "../components/Skills.astro";
+import Projects from "../components/Projects.astro";
+import Connect from "../components/Connect.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<MainLayout title="Skye Ibrahim — Data Engineer & Developer">
+  <main>
+    <Intro />
+    <Skills />
+    <Projects />
+  </main>
+  <Connect />
+</MainLayout>
