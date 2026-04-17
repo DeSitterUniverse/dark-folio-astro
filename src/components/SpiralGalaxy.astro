@@ -1,0 +1,190 @@
+---
+/**
+ * SpiralGalaxy.astro
+ * Refined Parametric Spiral Galaxy.
+ * Upgraded with fluid mouse repulsion, dynamic twinkling, and a tech-focused palette.
+ */
+---
+
+<canvas id="galaxy-canvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+<script>
+  class Star {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    
+    baseAngle: number;
+    radius: number;
+    armOffset: number;
+    
+    x: number = 0;
+    y: number = 0;
+    z: number;
+    
+    size: number;
+    color: string;
+    opacity: number;
+    rotationSpeed: number;
+
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+      this.canvas = canvas;
+      this.ctx = ctx;
+
+      // 3 arms for a denser, more complex look
+      const armIndex = Math.floor(Math.random() * 3);
+      this.armOffset = (Math.PI * 2 / 3) * armIndex;
+
+      // Position along Logarithmic Spiral
+      const t = Math.sqrt(Math.random()) * 20;
+      const a = 10; 
+      const b = 0.20;
+      
+      this.radius = a * Math.exp(b * t);
+
+      // Gaussian Clustering
+      const clusterTightness = 0.5;
+      const gaussianOffset = (Math.random() + Math.random() + Math.random() - 1.5) * clusterTightness;
+      this.baseAngle = t + this.armOffset + gaussianOffset;
+
+      this.size = Math.random() * 1.5 + 0.2;
+      this.z = Math.random() * 2 + 0.5;
+      this.opacity = Math.random() * 0.6 + 0.1;
+      
+      const colors = ['#0ea5e9', '#38bdf8', '#ffffff', '#7dd3fc', '#0284c7'];
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      
+      this.rotationSpeed = (Math.random() * 0.0008 + 0.0002) * (1 / (this.radius * 0.01 + 1));
+      
+      this.x = 0;
+      this.y = 0;
+    }
+
+    update(mouseX: number, mouseY: number, width: number, height: number, time: number) {
+      const currentAngle = this.baseAngle + time * this.rotationSpeed;
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+      let targetX = centerX + Math.cos(currentAngle) * this.radius;
+      let targetY = centerY + Math.sin(currentAngle) * this.radius;
+
+      // Deep Parallax
+      const parallaxX = (mouseX - centerX) * 0.03 * this.z;
+      const parallaxY = (mouseY - centerY) * 0.03 * this.z;
+      
+      targetX -= parallaxX;
+      targetY -= parallaxY;
+
+      // Fluid Repulsion Interaction
+      const dx = targetX - mouseX;
+      const dy = targetY - mouseY;
+      const distSq = dx * dx + dy * dy;
+      const interactionRadius = 150;
+
+      if (distSq < interactionRadius * interactionRadius && distSq > 0) {
+        const dist = Math.sqrt(distSq);
+        const strength = Math.pow((interactionRadius - dist) / interactionRadius, 2);
+        // Push stars outward
+        targetX += (dx / dist) * strength * 30 * this.z;
+        targetY += (dy / dist) * strength * 30 * this.z;
+      }
+
+      // Smooth interpolation
+      if (this.x === 0 && this.y === 0) {
+        this.x = targetX;
+        this.y = targetY;
+      } else {
+        this.x += (targetX - this.x) * 0.1;
+        this.y += (targetY - this.y) * 0.1;
+      }
+    }
+
+    draw(time: number) {
+      // Dynamic twinkle 
+      const twinkle = Math.sin(time * 0.05 + this.baseAngle * 10) * 0.2;
+      this.ctx.globalAlpha = Math.max(0, Math.min(1, this.opacity + twinkle));
+      
+      this.ctx.fillStyle = this.color;
+      this.ctx.beginPath();
+      this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+
+  const init = () => {
+    const canvas = document.getElementById('galaxy-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let stars: Star[] = [];
+    let mouseX = -1000;
+    let mouseY = -1000;
+    let time = 0;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      createStars();
+    };
+
+    const createStars = () => {
+      stars = [];
+      const count = 3000; 
+      for (let i = 0; i < count; i++) {
+        stars.push(new Star(canvas, ctx));
+      }
+    };
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // Move mouse offscreen when it leaves the window
+    window.addEventListener('mouseout', () => {
+      mouseX = -1000;
+      mouseY = -1000;
+    });
+
+    const animate = () => {
+      time++;
+      
+      // Fast trail-clearing effect
+      ctx.globalAlpha = 0.3; 
+      ctx.fillStyle = '#09090b'; 
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.globalAlpha = 1;
+
+      // Cyan core glow 
+      const gradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 0,
+        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) * 0.5
+      );
+      gradient.addColorStop(0, 'rgba(8, 145, 178, 0.08)'); 
+      gradient.addColorStop(1, 'transparent');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      stars.forEach(star => {
+        star.update(mouseX, mouseY, canvas.width, canvas.height, time);
+        star.draw(time);
+      });
+
+      requestAnimationFrame(animate);
+    };
+
+    resize();
+    animate();
+  };
+
+  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+  #galaxy-canvas {
+    background: #09090b;
+  }
+</style>

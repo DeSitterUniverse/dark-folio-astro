@@ -15,25 +15,4 @@ export const projects: Project[] = [
     tech: ["TypeScript", "Python", "Rust", "Tauri", "React", "LanceDB", "ONNX"],
     github: "https://github.com/DeSitterUniverse/Cephalon",
   },
-  {
-    title: "Synapse Pipeline Orchestrator",
-    description:
-      "End-to-end data pipeline framework automating ingestion, transformation, and quality checks across Azure Data Factory and Snowflake. Features dynamic parameterization, incremental loading patterns, and automated lineage tracking.",
-    tech: ["Python", "Azure ADF", "Snowflake", "SQL", "PowerShell"],
-    github: "#",
-  },
-  {
-    title: "Document Intelligence Engine",
-    description:
-      "Automated document processing system using UiPath RPA bots and custom Python OCR microservices. Processes thousands of invoices and contracts daily with 99.2% extraction accuracy and automatic exception routing.",
-    tech: ["UiPath", "Python", "REST API", "Docker", "Elasticsearch"],
-    github: "#",
-  },
-  {
-    title: "Cloud Infrastructure Monitor",
-    description:
-      "Real-time observability dashboard aggregating metrics across multi-cloud environments. Built with React frontend consuming telemetry from custom Node.js collectors, backed by Elasticsearch for log analytics.",
-    tech: ["React", "Node.js", "Elasticsearch", "Docker", "AWS"],
-    github: "#",
-  },
 ];

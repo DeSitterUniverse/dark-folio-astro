@@ -1,0 +1,157 @@
+---
+/**
+ * Experience.astro
+ * Professional experience and education history displayed in a vertical timeline.
+ * Features a minimalist dot-and-line aesthetic matching the site's tech-minimal theme.
+ */
+import GraduationCapLight from "phosphor-astro/GraduationCapLight.astro";
+import BriefcaseLight from "phosphor-astro/BriefcaseLight.astro";
+
+const experiences = [
+  {
+    type: "work",
+    organization: "The Co-operators",
+    location: "Apr 2019 — Nov 2024",
+    period: "Apr 2019 — Nov 2024",
+    roles: [
+      {
+        title: "Data Engineer",
+        team: "Analytics Tools & Data Warehouse",
+        description: "Developed ETL pipelines in ADF using Python/Java, processing 300+ entries daily with a 35% efficiency boost.",
+        details: [
+          "Managed Change Data Capture (CDC) via Qlik across Azure Synapse and SQL Server.",
+          "Resolved 96% of production incidents within SLA using ServiceNow.",
+          "Documented 200+ ETL processes in Informatica Cloud and ADF."
+        ]
+      },
+      {
+        title: "Software Engineer",
+        team: "Intelligent Automation Team",
+        description: "Re-designed transactional automation processes, increasing success rates from 30% to 96% and saving 800+ manual hours.",
+        details: [
+          "Developed standardized libraries for metric tracking with 99%+ reliability.",
+          "Managed user roles and configuration as a UiPath Administrator.",
+          "Implemented RPA documentation standards across the enterprise."
+        ]
+      },
+      {
+        title: "RPA Developer",
+        team: "eRPA Enterprise",
+        description: "Designed and developed enterprise automations saving 2,900+ manual hours.",
+        details: [
+          "Maintained system compatibility and high success rates during 100,000+ entry migrations.",
+          "Visualized ROI metrics using Kibana dashboards and Elasticsearch.",
+          "Resolved critical errors to ensure process integrity during system updates."
+        ]
+      }
+    ]
+  },
+  {
+    type: "education",
+    title: "BSc (Hons) Computer Science",
+    organization: "University of Guelph",
+    location: "Sep 2017 — Apr 2022",
+    period: "Sep 2017 — Apr 2022",
+    description: "Co-op Degree",
+    details: [
+      "Minor in Statistics",
+      "Graduated with Distinction"
+    ]
+  }
+];
+---
+
+<section id="experience" class="relative py-20 sm:py-28 bg-surface/30">
+  <div class="max-w-4xl mx-auto px-6">
+    <!-- Section header -->
+    <div class="mb-16">
+      <h2 class="font-mono text-sm text-text-muted tracking-widest uppercase mb-3 text-center sm:text-left">
+        // professional_history
+      </h2>
+      <p class="text-3xl sm:text-4xl font-mono font-semibold text-text-primary text-center sm:text-left">
+        Career Trajectory
+      </p>
+      <div class="mt-4 w-16 h-px bg-accent/40 mx-auto sm:mx-0"></div>
+    </div>
+
+    <!-- Timeline Container -->
+    <div class="relative flex flex-col gap-12">
+      <!-- Vertical line -->
+      <div class="absolute left-6 sm:left-1/2 top-2 bottom-0 w-px bg-border-dim -translate-x-1/2 hidden sm:block"></div>
+      <div class="absolute left-6 top-2 bottom-0 w-px bg-border-dim sm:hidden"></div>
+
+      {experiences.map((item, index) => (
+        <div class={`relative flex flex-col sm:flex-row items-start sm:items-center gap-8 ${index % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}>
+          
+          <!-- Timeline point -->
+          <div class="absolute left-6 sm:left-1/2 w-3 h-3 rounded-full bg-accent -translate-x-1/2 z-10 border-4 border-surface shadow-[0_0_15px_rgba(167,139,250,0.5)]"></div>
+
+          <!-- Content Card -->
+          <div class={`w-full sm:w-[45%] group ${index % 2 === 0 ? 'sm:text-right sm:pr-0' : 'sm:text-left sm:pl-0'}`}>
+            <div class="experience-card relative p-6 rounded-xl border border-border-dim bg-surface-card/40 backdrop-blur-sm transition-all duration-300 hover:border-accent/40 hover:bg-surface-hover/60">
+              
+              <div class={`flex items-center gap-3 mb-2 font-mono text-xs uppercase tracking-widest text-accent ${index % 2 === 0 ? 'sm:justify-end' : 'sm:justify-start'}`}>
+                {item.type === 'work' ? <BriefcaseLight class="w-3.5 h-3.5" /> : <GraduationCapLight class="w-4 h-4" />}
+                <span>{item.period}</span>
+              </div>
+
+              {item.type === 'work' ? (
+                <div>
+                  <h3 class="text-2xl font-bold text-text-primary mb-1">{item.organization}</h3>
+                  <p class="text-sm font-mono text-text-muted mb-6">{item.location}</p>
+                  
+                  <div class="space-y-8">
+                    {item.roles.map((role, rIndex) => (
+                      <div class={rIndex !== 0 ? "pt-6 border-t border-border-dim/40" : ""}>
+                         <h4 class="text-lg font-bold text-text-primary mb-1">{role.title}</h4>
+                         <p class="text-xs font-mono text-accent mb-3 uppercase tracking-wider">{role.team}</p>
+                         <p class="text-sm text-text-secondary leading-relaxed mb-3">{role.description}</p>
+                         <ul class={`space-y-1.5 ${index % 2 === 0 ? 'sm:items-end' : 'sm:items-start'} flex flex-col`}>
+                            {role.details.map((detail) => (
+                              <li class="text-xs text-text-muted flex items-center gap-2">
+                                {index % 2 !== 0 && <span class="w-1 h-1 rounded-full bg-accent/40"></span>}
+                                {detail}
+                                {index % 2 === 0 && <span class="hidden sm:block w-1 h-1 rounded-full bg-accent/40"></span>}
+                              </li>
+                            ))}
+                         </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <h3 class="text-xl font-bold text-text-primary mb-1">{item.title}</h3>
+                  <p class="text-sm font-mono text-text-muted mb-4">{item.organization}</p>
+                  <p class="text-sm text-text-secondary leading-relaxed mb-4">{item.description}</p>
+                  <ul class={`space-y-1.5 ${index % 2 === 0 ? 'sm:items-end' : 'sm:items-start'} flex flex-col`}>
+                    {item.details.map((detail) => (
+                      <li class="text-xs text-text-muted flex items-center gap-2">
+                        {index % 2 !== 0 && <span class="w-1 h-1 rounded-full bg-accent/40"></span>}
+                        {detail}
+                        {index % 2 === 0 && <span class="hidden sm:block w-1 h-1 rounded-full bg-accent/40"></span>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <!-- Spacer for the other side of the timeline -->
+          <div class="hidden sm:block w-[45%]"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience-card {
+    will-change: transform;
+  }
+  
+  .experience-card:hover {
+    transform: translateY(-4px);
+  }
+</style>

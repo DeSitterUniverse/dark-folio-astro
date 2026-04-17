@@ -1,43 +1,55 @@
-# Astro Starter Kit: Minimal
+# Skye Ibrahim — Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
-```
+A high-performance, dark-minimalist developer portfolio built with **Astro**, **Tailwind CSS**, and **Phosphor Icons**. Designed for speed, accessibility, and a premium interactive experience.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+---
 
-## 🚀 Project Structure
+## 🚀 Key Features
 
-Inside of your Astro project, you'll see the following folders and files:
+- **Hyper-Optimized Spiral Galaxy**: A high-performance simulation using Gaussian clustering to create distinct arms and a parametric displacement engine for fluid, reactive mouse interaction. Optimized for 60fps on all devices.
+- **Technical Spec-Sheet**: Professional high-density skills grid with backdrop-blur card backgrounds for maximum readability.
+- **Unified Experience Timeline**: Consolidated career progression showing role-based growth within major tenures.
+- **Typewriter Effect**: Dynamic title rotation (Data Engineer → Full-Stack Developer → Automation Developer).
+- **Hardware Accelerated**: Optimized for smooth performance even on low-power devices.
+- **Zero-JS (Mostly)**: Core layout and initial render have near-zero JS overhead, with interactive elements progressively enhanced.
+
+## 🛠️ Technology Stack
+
+- **Framework**: [Astro v5.0+](https://astro.build/)
+- **Styling**: [Tailwind CSS v4.0+](https://tailwindcss.com/)
+- **Icons**: [Phosphor Icons](https://phosphoricons.com/)
+- **Animations**: CSS Keyframes + Framer Motion (Optional/Minimal)
+- **Deployment**: Static Site Generation (SSG)
+
+## 📁 Project Structure
 
 ```text
 /
-├── public/
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/       # Reusable UI sections (Experience, Skills, Intro, etc.)
+│   ├── layouts/          # Base Page Layouts (MainLayout.astro)
+│   ├── data/             # Static data for projects and skills
+│   ├── styles/           # Global design tokens and resets
+│   └── pages/            # Page routes (index.astro)
+├── public/               # Static assets (Resume, Favicon)
+└── package.json          # Dependencies and scripts
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
 
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
+| Command | Action |
+| :--- | :--- |
+| `npm install` | Installs project dependencies |
+| `npm run dev` | Spins up a local development server |
+| `npm run build` | Builds the static site for production |
+| `npm run preview` | Previews the production build locally |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 📐 Design Philosophy
 
-## 👀 Want to learn more?
+- **Minimalist Dark Theme**: Deep black surfaces (`#09090b`) with monochromatic accents and soft purple glows.
+- **Typography-First**: Heavy use of "JetBrains Mono" and "Inter" for a clean, schematic "developer" vibe.
+- **Proximity Awareness**: Interactive elements should feel alive and aware of the user's presence without being distracting.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+---
+
+*Build by Skye Ibrahim — 2026*

@@ -5,7 +5,7 @@
  * mouse-following glow effect, and fixed navigation.
  */
 import Navbar from "../components/Navbar.astro";
-import MouseGlow from "../components/MouseGlow.astro";
+import SpiralGalaxy from "../components/SpiralGalaxy.astro";
 
 interface Props {
   title: string;
@@ -47,7 +47,7 @@ const {
     <title>{title}</title>
   </head>
   <body class="min-h-screen">
-    <MouseGlow />
+    <SpiralGalaxy />
     <Navbar />
     <slot />
   </body>

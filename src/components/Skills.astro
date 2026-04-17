@@ -1,81 +1,71 @@
 ---
 /**
  * Skills.astro
- * Skills section with categorized lists inside styled tiles/cards.
- * Each category gets its own bordered card matching the project card aesthetic.
+ * Redesigned as a "Technical Spec Sheet" for better scannability and a professional look.
+ * Replaces bulky logos with a dense, industrial grid layout.
  */
 import { skillCategories } from "../data/skills";
+import CubeLight from "phosphor-astro/CubeLight.astro";
 ---
 
-<section id="stack" class="relative py-20 sm:py-28">
+<section id="stack" class="relative py-20 sm:py-32 border-t border-border-dim/30">
   <div class="max-w-6xl mx-auto px-6">
-    <!-- Section header -->
-    <div class="mb-14">
-      <h2 class="font-mono text-sm text-text-muted tracking-widest uppercase mb-3">
-        // skills
-      </h2>
-      <p class="text-2xl sm:text-3xl font-mono font-semibold text-text-primary">
-        Tools & Technologies
-      </p>
-      <div class="mt-4 w-16 h-px bg-accent/40"></div>
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+      <div class="max-w-xl">
+        <h2 class="font-mono text-sm text-accent tracking-[0.2em] uppercase mb-4">
+          // technical_specifications
+        </h2>
+        <p class="text-4xl sm:text-5xl font-mono font-bold text-text-primary tracking-tight">
+          Tools & Tech<span class="text-accent">_</span>
+        </p>
+      </div>
+      <div class="hidden md:block">
+        <!-- Metadata removed as per request -->
+      </div>
     </div>
 
-    <!-- Skills grid: each category in its own card -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- The Spec Sheet Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
       {skillCategories.map((category) => (
-        <div class="skill-tile group">
-          <div class="skill-tile-inner">
-            <h3 class="font-mono text-xs font-semibold text-accent tracking-widest uppercase mb-5 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-accent/60"></span>
-              {category.title}
+        <div class="group relative p-8 rounded-2xl bg-surface-card/40 backdrop-blur-md border border-border-dim/50 hover:border-accent/30 transition-all duration-500">
+          <!-- Category Header -->
+          <div class="flex items-center gap-4 mb-8">
+            <div class="w-8 h-8 rounded-lg bg-surface-card border border-border-dim flex items-center justify-center text-accent group-hover:border-accent/40 group-hover:bg-accent-dim transition-all duration-300">
+              <CubeLight class="w-4 h-4" />
+            </div>
+            <h3 class="font-mono text-base font-bold text-text-primary tracking-wide">
+              {category.title.toUpperCase()}
             </h3>
-            <ul class="space-y-2.5">
-              {category.items.map((item) => (
-                <li class="text-sm text-text-secondary flex items-center gap-2.5 skill-item">
-                  <span class="w-1 h-1 rounded-full bg-border-dim shrink-0 transition-colors duration-200"></span>
-                  <span class="transition-colors duration-200">{item}</span>
-                </li>
-              ))}
-            </ul>
+            <div class="flex-grow h-px bg-gradient-to-r from-border-dim to-transparent ml-2"></div>
+          </div>
+
+          <!-- Skills Row -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-6">
+            {category.items.map((item) => (
+              <div class="skill-item flex items-center gap-2 group/item">
+                <div class="w-1 h-1 rounded-full bg-border-dim group-hover/item:bg-accent group-hover/item:scale-125 transition-all duration-300"></div>
+                <span class="font-mono text-[13px] text-text-secondary group-hover/item:text-text-primary transition-colors">
+                  {item}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       ))}
+    </div>
+
+    <!-- Footer Note -->
+    <div class="mt-20 pt-8 border-t border-border-dim/20 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p class="font-mono text-[10px] text-text-muted uppercase tracking-[0.3em] mx-auto">
+        Technical Competencies & Systems Engineering
+      </p>
     </div>
   </div>
 </section>
 
 <style>
-  /* ─── Skill Tile (matches project card aesthetic) ─── */
-  .skill-tile {
-    position: relative;
-    border-radius: 1rem;
-    padding: 1px;
-    background: var(--color-border-dim);
-    transition: background 0.4s ease;
-  }
-
-  .skill-tile:hover {
-    background: var(--color-accent-glow);
-  }
-
-  .skill-tile-inner {
-    border-radius: calc(1rem - 1px);
-    background: var(--color-surface-card);
-    padding: 1.5rem;
-    height: 100%;
-    transition: background 0.4s ease;
-  }
-
-  .skill-tile:hover .skill-tile-inner {
-    background: var(--color-surface-hover);
-  }
-
-  /* Highlight list items on card hover */
-  .skill-tile:hover .skill-item span:first-child {
-    background-color: var(--color-accent);
-  }
-
-  .skill-tile:hover .skill-item span:last-child {
-    color: var(--color-text-primary);
+  .skill-item {
+    cursor: default;
   }
 </style>
