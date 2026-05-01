@@ -456,7 +456,7 @@
     };
     window.addEventListener("galaxy:pause", onPause);
 
-    // 🔥 This is where the magic happens. We rebuild the data, but keep the Renderer alive!
+    // Rebuild the data, but keep the Renderer alive!
     const onGalaxyResize = (e: Event) => {
       currentTextureWidth = (e as CustomEvent).detail.textureWidth;
       buildGalaxy(currentTextureWidth);
