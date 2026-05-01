@@ -1,0 +1,58 @@
+---
+/**
+ * StatsMonitor.astro
+ * Global performance monitor (FPS and MB).
+ * Exposes window.appStats so the Three.js loop can accurately measure render time.
+ */
+---
+
+<div id="stats-container" class="pointer-events-none z-[9999]"></div>
+
+<script>
+  import Stats from "stats.js";
+
+  // Tell TypeScript about our global variable so it doesn't throw errors
+  declare global {
+    interface Window {
+      appStats?: Stats;
+    }
+  }
+
+  const initStats = () => {
+    const container = document.getElementById("stats-container");
+    if (!container) return;
+
+    // Prevent Astro view transitions from creating duplicate monitors
+    if (container.children.length > 0) return;
+
+    const stats = new Stats();
+
+    // Expose it globally so the Galaxy worker can trigger .begin() and .end()
+    window.appStats = stats;
+
+    // Shift it safely out of the way of your navigation bar
+    stats.dom.style.position = "fixed";
+    stats.dom.style.top = "auto";
+    stats.dom.style.bottom = "10px";
+    stats.dom.style.left = "auto";
+    stats.dom.style.right = "10px";
+
+    // Force both FPS (panel 0) and MB (panel 2) to display simultaneously
+    stats.dom.style.display = "flex";
+    stats.dom.style.gap = "5px";
+
+    for (let i = 0; i < stats.dom.children.length; i++) {
+      const child = stats.dom.children[i] as HTMLElement;
+      if (i === 0) {
+        child.style.display = "block";
+      } else {
+        child.style.display = "none"; // Hide the MS (milliseconds) panel and MB (megabytes) panel
+      }
+    }
+
+    container.appendChild(stats.dom);
+  };
+
+  document.addEventListener("DOMContentLoaded", initStats);
+  document.addEventListener("astro:page-load", initStats);
+</script>

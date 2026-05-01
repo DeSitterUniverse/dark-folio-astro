@@ -2,10 +2,11 @@
 /**
  * MainLayout.astro
  * Base layout with full A11y metadata, Google Fonts, global styles,
- * mouse-following glow effect, and fixed navigation.
+ * and fixed navigation.
  */
 import Navbar from "../components/Navbar.astro";
-import SpiralGalaxy from "../components/SpiralGalaxy.astro";
+import ParticleBackground from "../components/ParticleBackground.astro";
+import StatsMonitor from "../components/StatsMonitor.astro";
 
 interface Props {
   title: string;
@@ -46,8 +47,9 @@ const {
 
     <title>{title}</title>
   </head>
-  <body class="min-h-screen">
-    <SpiralGalaxy />
+  <body class="min-h-screen text-slate-200">
+    <StatsMonitor />
+    <ParticleBackground />
     <Navbar />
     <slot />
   </body>

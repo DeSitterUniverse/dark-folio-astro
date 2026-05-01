@@ -1,156 +1,483 @@
 ---
 /**
  * ParticleBackground.astro
- * Lightweight physics-based particle canvas with mouse interaction.
- * Canvas is position:fixed covering the viewport.
- * Particles repel from the cursor with spring-back easing.
- * Mouse events tracked in client (viewport) coordinates to match the fixed canvas.
+ * True N-Body Dual Galaxy Merger.
+ * Features: Dynamical Friction, Inelastic Core Mergers, and Softened Gravity.
  */
 ---
 
-<canvas id="particle-canvas" aria-hidden="true"></canvas>
+<canvas
+  id="galaxy-canvas"
+  class="fixed inset-0 z-0 pointer-events-none"
+  aria-hidden="true"></canvas>
 
 <script>
-  const canvas = document.getElementById("particle-canvas") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas 2D context unavailable");
+  import * as THREE from "three";
+  import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
-  let w = 0;
-  let h = 0;
-  let animId = 0;
+  const init = () => {
+    const canvas = document.getElementById(
+      "galaxy-canvas"
+    ) as HTMLCanvasElement;
+    if (!canvas) return;
 
-  // Mouse state (viewport coordinates to match fixed canvas)
-  let mouseX = -1000;
-  let mouseY = -1000;
-  const MOUSE_RADIUS = 140;
-  const MOUSE_FORCE = 0.6;
+    // ============================================================================
+    // ⚙️ CONFIGURATION ZONE - TWEAK THESE TO CHANGE THE UNIVERSE
+    // ============================================================================
 
-  interface Particle {
-    x: number;
-    y: number;
-    baseX: number;
-    baseY: number;
-    vx: number;
-    vy: number;
-    r: number;
-    o: number;
-  }
+    // --- Performance & Quality ---
+    const TARGET_FPS = 60; // Framerate lock.
+    const TEXTURE_WIDTH = 72; // Grid size. e.g. 128x128 = 16,384 stars.
 
-  let particles: Particle[] = [];
+    // --- Physics Engine (The Laws of Our Universe) ---
+    // TIME_STEP: How much time passes per frame.
+    const TIME_STEP = 0.08;
 
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
+    // GRAVITY (G): Universal gravitational constant. IRL it is 6.674×10^−11.
+    // Here it's 0.0001 because our mass and distance units are arbitrary.
+    const GRAVITY = 0.0001;
 
-  function createParticles() {
-    const count = Math.min(Math.floor((w * h) / 14000), 100);
-    particles = [];
+    // MAX_SPEED: The "Speed of Light". Prevents stars from breaking the
+    // physics engine if they get perfectly slingshotted by a black hole.
+    const MAX_SPEED = 10.0;
+
+    // SOFTENING: A computational trick used in real astrophysics. Prevents division
+    // by zero if two stars overlap perfectly.
+    const SOFTENING = 3.5;
+
+    // FRICTION (Dynamical Friction): Only applies to the massive black holes.
+    // It simulates the drag they experience when wading through the star field,
+    // pulling them into an inevitable collision.
+    const FRICTION = 0.998;
+
+    // --- Galaxy Architecture ---
+    const CORE_MASS = 4000000; // Mass of the Supermassive Black Holes
+    const GALAXY_RADIUS = 35; // Width of the galactic disks
+    const OFFSET = 25; // Spawn distance from the center
+    const MERGE_FACTOR = 0.98; // Forces an elliptical orbit that degrades into a crash
+    const MERGE_RADIUS = 5.0; // The Event Horizon. If BHs get this close, they fuse.
+
+    // --- Visuals ---
+    const PARTICLE_BASE_SIZE = 150.0;
+    const BLACK_HOLE_SIZE = 10.0;
+    const GALAXY_1_COLORS = ["#fb923c", "#facc15", "#ef4444"]; // Warm (Oranges/Reds)
+    const GALAXY_2_COLORS = ["#38bdf8", "#818cf8", "#e879f9"]; // Cool (Cyans/Purples)
+
+    // ============================================================================
+    // 1. SCENE SETUP & GPGPU MEMORY
+    // ============================================================================
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      800
+    );
+    camera.position.set(0, 90, 160);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: "high-performance",
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const count = TEXTURE_WIDTH * TEXTURE_WIDTH;
+    const gpuCompute = new GPUComputationRenderer(
+      TEXTURE_WIDTH,
+      TEXTURE_WIDTH,
+      renderer
+    );
+    if (renderer.capabilities.isWebGL2 === false)
+      gpuCompute.setDataType(THREE.HalfFloatType);
+
+    const dtPosition = gpuCompute.createTexture();
+    const dtVelocity = gpuCompute.createTexture();
+    const posData = dtPosition.image.data as Float32Array;
+    const velData = dtVelocity.image.data as Float32Array;
+
+    // ============================================================================
+    // 2. INITIAL CONDITIONS
+    // ============================================================================
+    // Calculate orbital velocity so the galaxies swing around each other
+    const binaryVelocity = Math.sqrt((GRAVITY * CORE_MASS) / (2 * OFFSET));
+    const sysVz = binaryVelocity * MERGE_FACTOR;
+
+    // Calculate exact UV coordinates of the Black Holes for the GPU shader
+    const bh1_index = 0;
+    const bh2_index = Math.floor(count / 2);
+
+    const bh1_uv = new THREE.Vector2(
+      (bh1_index % TEXTURE_WIDTH) / TEXTURE_WIDTH + 0.5 / TEXTURE_WIDTH,
+      Math.floor(bh1_index / TEXTURE_WIDTH) / TEXTURE_WIDTH +
+        0.5 / TEXTURE_WIDTH
+    );
+    const bh2_uv = new THREE.Vector2(
+      (bh2_index % TEXTURE_WIDTH) / TEXTURE_WIDTH + 0.5 / TEXTURE_WIDTH,
+      Math.floor(bh2_index / TEXTURE_WIDTH) / TEXTURE_WIDTH +
+        0.5 / TEXTURE_WIDTH
+    );
+
     for (let i = 0; i < count; i++) {
-      const x = Math.random() * w;
-      const y = Math.random() * h;
-      particles.push({
-        x,
-        y,
-        baseX: x,
-        baseY: y,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.8 + 0.5,
-        o: Math.random() * 0.4 + 0.08,
-      });
-    }
-  }
+      const p = i * 4;
+      const isGalaxy1 = i < count / 2;
 
-  function draw() {
-    ctx!.clearRect(0, 0, w, h);
+      const cx = isGalaxy1 ? -OFFSET : OFFSET;
+      const cz = isGalaxy1 ? -10 : 10;
+      const gVx = 0;
+      const gVz = isGalaxy1 ? sysVz : -sysVz;
 
-    for (const p of particles) {
-      // Drift
-      p.baseX += p.vx;
-      p.baseY += p.vy;
-
-      // Wrap
-      if (p.baseX < 0) p.baseX = w;
-      if (p.baseX > w) p.baseX = 0;
-      if (p.baseY < 0) p.baseY = h;
-      if (p.baseY > h) p.baseY = 0;
-
-      // Mouse repulsion
-      let targetX = p.baseX;
-      let targetY = p.baseY;
-
-      const dx = mouseX - p.baseX;
-      const dy = mouseY - p.baseY;
-      const distSq = dx * dx + dy * dy;
-      const radiusSq = MOUSE_RADIUS * MOUSE_RADIUS;
-
-      if (distSq < radiusSq && distSq > 0) {
-        const dist = Math.sqrt(distSq);
-        const force = (1 - dist / MOUSE_RADIUS) * MOUSE_FORCE;
-        targetX = p.baseX - (dx / dist) * force * MOUSE_RADIUS * 0.4;
-        targetY = p.baseY - (dy / dist) * force * MOUSE_RADIUS * 0.4;
+      // Inject Supermassive Black Holes
+      if (i === bh1_index || i === bh2_index) {
+        posData[p + 0] = cx;
+        posData[p + 1] = 0;
+        posData[p + 2] = cz;
+        posData[p + 3] = CORE_MASS;
+        velData[p + 0] = gVx;
+        velData[p + 1] = 0;
+        velData[p + 2] = gVz;
+        velData[p + 3] = 0.0;
+        continue;
       }
 
-      // Spring easing
-      p.x += (targetX - p.x) * 0.1;
-      p.y += (targetY - p.y) * 0.1;
+      // Inject Normal Stars
+      const r = Math.pow(Math.random(), 2.0) * GALAXY_RADIUS + 4.0;
+      const theta = Math.random() * Math.PI * 2;
+      const localX = Math.cos(theta) * r;
+      const localZ = Math.sin(theta) * r;
+      const localY = (Math.random() - 0.5) * (GALAXY_RADIUS - r) * 0.12;
+
+      posData[p + 0] = cx + localX;
+      posData[p + 1] = localY;
+      posData[p + 2] = cz + localZ;
+      posData[p + 3] = Math.random() * 0.5 + 0.1;
+
+      const softeningSq = SOFTENING * SOFTENING;
+      const adjustedGravity =
+        (GRAVITY * CORE_MASS * r * r) / Math.pow(r * r + softeningSq, 1.5);
+      const v_mag = Math.sqrt(adjustedGravity);
+
+      velData[p + 0] = gVx + (-localZ / r) * v_mag;
+      velData[p + 1] = (Math.random() - 0.5) * 0.05;
+      velData[p + 2] = gVz + (localX / r) * v_mag;
+      velData[p + 3] = 0.0;
     }
 
-    // Draw connections
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const distSq = dx * dx + dy * dy;
-        if (distSq < 16900) {
-          const alpha = (1 - distSq / 16900) * 0.12;
-          ctx!.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
-          ctx!.lineWidth = 0.5;
-          ctx!.beginPath();
-          ctx!.moveTo(particles[i].x, particles[i].y);
-          ctx!.lineTo(particles[j].x, particles[j].y);
-          ctx!.stroke();
+    // ============================================================================
+    // 3. THE COMPUTE SHADERS (GLSL)
+    // ============================================================================
+
+    const computeVelocityShader = `
+      uniform float uTimeStep;
+      uniform float uSofteningSq;
+      uniform float uG;
+      uniform float uFriction;
+      uniform float uMaxSpeed;
+      
+      uniform vec2 uBH1;
+      uniform vec2 uBH2;
+      uniform float uMergeRadius;
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec4 posMass = texture2D(texturePosition, uv);
+        vec4 vel = texture2D(textureVelocity, uv);
+        vec3 p = posMass.xyz;
+        vec3 accel = vec3(0.0);
+
+        bool isBH1 = distance(uv, uBH1) < 0.001;
+        bool isBH2 = distance(uv, uBH2) < 0.001;
+
+        // 1. Calculate Gravity from all other particles
+        for(float y = 0.5; y < resolution.y; y += 1.0) {
+          for(float x = 0.5; x < resolution.x; x += 1.0) {
+            vec2 otherUV = vec2(x, y) / resolution.xy;
+            if (otherUV == uv) continue; 
+
+            vec4 otherPosMass = texture2D(texturePosition, otherUV);
+            if (otherPosMass.w <= 0.0) continue; // Skip dead particles (eaten BHs)
+
+            vec3 dp = otherPosMass.xyz - p;
+            float distSq = dot(dp, dp) + uSofteningSq; 
+            float dist = sqrt(distSq);
+            accel += ((uG * otherPosMass.w) / (distSq * dist)) * dp;
+          }
         }
+
+        vel.xyz += accel * uTimeStep;
+        
+        // 2. DYNAMICAL FRICTION & GAS COOLING
+        if (isBH1 || isBH2) {
+            // Heavy drag on the black holes to force the merger
+            vel.xyz *= uFriction; 
+        } else {
+            // Gas Cooling: A microscopic drag on normal stars.
+            // This saps their chaotic vertical energy over time, forcing 
+            // them to settle into a flat, spinning spiral disk!
+            vel.xyz *= 0.9999; 
+        }
+
+        // 3. TRUE MERGER PHYSICS (Momentum Conservation)
+        vec4 bh1Pos = texture2D(texturePosition, uBH1);
+        vec4 bh2Pos = texture2D(texturePosition, uBH2);
+        float coreDist = distance(bh1Pos.xyz, bh2Pos.xyz);
+
+        if (coreDist < uMergeRadius) {
+            if (isBH1 || isBH2) {
+                // Combine momentum: (m1*v1 + m2*v2) / (m1 + m2)
+                vec4 bh1Vel = texture2D(textureVelocity, uBH1);
+                vec4 bh2Vel = texture2D(textureVelocity, uBH2);
+                vel.xyz = (bh1Pos.w * bh1Vel.xyz + bh2Pos.w * bh2Vel.xyz) / (bh1Pos.w + bh2Pos.w);
+            }
+        }
+
+        // 4. VELOCITY CLAMPING (Speed of Light)
+        float speed = length(vel.xyz);
+        if (speed > uMaxSpeed) {
+            vel.xyz = (vel.xyz / speed) * uMaxSpeed;
+        }
+
+        gl_FragColor = vel;
+      }
+    `;
+
+    const computePositionShader = `
+      uniform float uTimeStep;
+      uniform vec2 uBH1;
+      uniform vec2 uBH2;
+      uniform float uMergeRadius;
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec4 posMass = texture2D(texturePosition, uv);
+        vec4 vel = texture2D(textureVelocity, uv);
+        
+        // 1. Move particle based on velocity
+        posMass.xyz += vel.xyz * uTimeStep;
+
+        // 2. INELASTIC COLLISION (Mass Combination)
+        vec4 bh1Pos = texture2D(texturePosition, uBH1);
+        vec4 bh2Pos = texture2D(texturePosition, uBH2);
+        float coreDist = distance(bh1Pos.xyz, bh2Pos.xyz);
+
+        bool isBH1 = distance(uv, uBH1) < 0.001;
+        bool isBH2 = distance(uv, uBH2) < 0.001;
+
+        if (coreDist < uMergeRadius) {
+            if (isBH1) {
+                // BH1 eats BH2, adding its mass
+                posMass.w = bh1Pos.w + bh2Pos.w; 
+                posMass.xyz = mix(bh1Pos.xyz, bh2Pos.xyz, 0.5); 
+            } else if (isBH2) {
+                // BH2 dies (mass drops to 0, stopping its gravity)
+                posMass.w = 0.0; 
+                posMass.xyz = mix(bh1Pos.xyz, bh2Pos.xyz, 0.5); 
+            }
+        }
+
+        gl_FragColor = posMass; 
+      }
+    `;
+
+    const velocityVariable = gpuCompute.addVariable(
+      "textureVelocity",
+      computeVelocityShader,
+      dtVelocity
+    );
+    const positionVariable = gpuCompute.addVariable(
+      "texturePosition",
+      computePositionShader,
+      dtPosition
+    );
+    gpuCompute.setVariableDependencies(velocityVariable, [
+      positionVariable,
+      velocityVariable,
+    ]);
+    gpuCompute.setVariableDependencies(positionVariable, [
+      positionVariable,
+      velocityVariable,
+    ]);
+
+    // Inject configs
+    velocityVariable.material.uniforms.uTimeStep = { value: TIME_STEP };
+    velocityVariable.material.uniforms.uSofteningSq = {
+      value: SOFTENING * SOFTENING,
+    };
+    velocityVariable.material.uniforms.uG = { value: GRAVITY };
+    velocityVariable.material.uniforms.uFriction = { value: FRICTION };
+    velocityVariable.material.uniforms.uMaxSpeed = { value: MAX_SPEED };
+    velocityVariable.material.uniforms.uBH1 = { value: bh1_uv };
+    velocityVariable.material.uniforms.uBH2 = { value: bh2_uv };
+    velocityVariable.material.uniforms.uMergeRadius = { value: MERGE_RADIUS };
+
+    positionVariable.material.uniforms.uTimeStep = { value: TIME_STEP };
+    positionVariable.material.uniforms.uBH1 = { value: bh1_uv };
+    positionVariable.material.uniforms.uBH2 = { value: bh2_uv };
+    positionVariable.material.uniforms.uMergeRadius = { value: MERGE_RADIUS };
+
+    gpuCompute.init();
+
+    // ============================================================================
+    // 4. VISUAL RENDERING SETUP
+    // ============================================================================
+    const geometry = new THREE.BufferGeometry();
+    const renderPositions = new Float32Array(count * 3);
+    const references = new Float32Array(count * 2);
+    const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+
+    const g1Cols = GALAXY_1_COLORS.map((c) => new THREE.Color(c));
+    const g2Cols = GALAXY_2_COLORS.map((c) => new THREE.Color(c));
+
+    for (let i = 0; i < count; i++) {
+      references[i * 2] =
+        (i % TEXTURE_WIDTH) / TEXTURE_WIDTH + 0.5 / TEXTURE_WIDTH;
+      references[i * 2 + 1] =
+        Math.floor(i / TEXTURE_WIDTH) / TEXTURE_WIDTH + 0.5 / TEXTURE_WIDTH;
+
+      const isGalaxy1 = i < count / 2;
+      const palette = isGalaxy1 ? g1Cols : g2Cols;
+      const color = palette[Math.floor(Math.random() * palette.length)]!;
+
+      if (i === bh1_index || i === bh2_index) {
+        colors[i * 3 + 0] = 1.0;
+        colors[i * 3 + 1] = 1.0;
+        colors[i * 3 + 2] = 1.0;
+        sizes[i] = BLACK_HOLE_SIZE;
+      } else {
+        colors[i * 3 + 0] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+        sizes[i] = Math.random() * 5 + 2;
       }
     }
 
-    // Draw particles
-    for (const p of particles) {
-      ctx!.fillStyle = `rgba(167, 139, 250, ${p.o})`;
-      ctx!.beginPath();
-      ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx!.fill();
-    }
+    geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(renderPositions, 3)
+    );
+    geometry.setAttribute(
+      "reference",
+      new THREE.BufferAttribute(references, 2)
+    );
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
 
-    animId = requestAnimationFrame(draw);
-  }
+    const material = new THREE.ShaderMaterial({
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexColors: true,
+      uniforms: {
+        texturePosition: { value: null },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+        uBaseSize: { value: PARTICLE_BASE_SIZE },
+      },
+      vertexShader: `
+        uniform sampler2D texturePosition;
+        uniform float uPixelRatio;
+        uniform float uBaseSize;
+        attribute vec2 reference;
+        attribute float aSize;
+        varying vec3 vColor;
+        
+        void main() {
+          vec4 posData = texture2D(texturePosition, reference);
+          
+          if (posData.w <= 0.0) {
+             gl_Position = vec4(9999.0, 9999.0, 9999.0, 1.0);
+             return;
+          }
 
-  // Use clientX/clientY (viewport coords) since canvas is position:fixed
-  document.addEventListener("mousemove", (e: MouseEvent) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+          vec4 viewPosition = viewMatrix * modelMatrix * vec4(posData.xyz, 1.0);
+          gl_Position = projectionMatrix * viewPosition;
+          gl_PointSize = (aSize * uBaseSize * uPixelRatio) * (1.0 / -viewPosition.z);
+          vColor = color;
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vColor;
+        void main() {
+          float dist = distance(gl_PointCoord, vec2(0.5));
+          if (dist > 0.5) discard; 
+          float alpha = pow(1.0 - (dist * 2.0), 1.2);
+          gl_FragColor = vec4(vColor, alpha);
+        }
+      `,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    // ============================================================================
+    // 5. ANIMATION & LIFECYCLE
+    // ============================================================================
+    const fpsInterval = 1000 / TARGET_FPS;
+    let then = performance.now();
+    let animId = 0;
+
+    const tick = () => {
+      const now = performance.now();
+      const elapsed = now - then;
+
+      if (elapsed > fpsInterval) {
+        then = now - (elapsed % fpsInterval);
+        if (window.appStats) window.appStats.begin();
+
+        gpuCompute.compute();
+        const shaderMat = material as THREE.ShaderMaterial;
+        shaderMat.uniforms.texturePosition!.value =
+          gpuCompute.getCurrentRenderTarget(positionVariable).texture;
+        renderer.render(scene, camera);
+
+        if (window.appStats) window.appStats.end();
+      }
+      animId = window.requestAnimationFrame(tick);
+    };
+    tick();
+
+    const onResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      const shaderMat = material as THREE.ShaderMaterial;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      if (shaderMat.uniforms && shaderMat.uniforms.uPixelRatio) {
+        shaderMat.uniforms.uPixelRatio!.value = Math.min(
+          window.devicePixelRatio,
+          2
+        );
+      }
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.cancelAnimationFrame(animId);
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+      scene.clear();
+    };
+  };
+
+  let cleanup: (() => void) | undefined;
+  document.addEventListener("DOMContentLoaded", () => {
+    cleanup = init();
   });
-
-  document.addEventListener("mouseleave", () => {
-    mouseX = -1000;
-    mouseY = -1000;
+  document.addEventListener("astro:page-load", () => {
+    if (cleanup) cleanup();
+    cleanup = init();
   });
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      cancelAnimationFrame(animId);
-    } else {
-      animId = requestAnimationFrame(draw);
-    }
+  document.addEventListener("astro:before-swap", () => {
+    if (cleanup) cleanup();
   });
-
-  window.addEventListener("resize", () => {
-    resize();
-    createParticles();
-  });
-
-  resize();
-  createParticles();
-  draw();
 </script>
+
+<style>
+  #galaxy-canvas {
+    background: transparent;
+  }
+</style>

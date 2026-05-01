@@ -92,25 +92,9 @@ const { project } = Astro.props;
     overflow: hidden;
   }
 
-  /* Radial gradient glow — tracks cursor via CSS custom properties */
-  .glow-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(
-      500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      var(--color-accent-glow),
-      transparent 40%
-    );
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-    will-change: opacity;
-  }
-
-  .glow-card:hover::before {
-    opacity: 1;
+  /* Border color on hover (non-following) */
+  .glow-card:hover {
+    background: var(--color-accent);
   }
 
   /* ─── Inner Content (lifts on hover for 3D depth) ─── */

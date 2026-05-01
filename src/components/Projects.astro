@@ -30,21 +30,4 @@ import ProjectCard from "./ProjectCard.astro";
   </div>
 </section>
 
-<!-- 
-  Minimal client-side script: mouse coordinate tracking for glow effect.
-  This is the ONLY JS on the page — passes cursor position to CSS custom properties.
--->
-<script>
-  document.querySelectorAll<HTMLElement>("[data-glow-card]").forEach((card) => {
-    const glowEl = card.querySelector<HTMLElement>(".glow-card");
-    if (!glowEl) return;
 
-    card.addEventListener("mousemove", (e: MouseEvent) => {
-      const rect = glowEl.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      glowEl.style.setProperty("--mouse-x", `${x}px`);
-      glowEl.style.setProperty("--mouse-y", `${y}px`);
-    });
-  });
-</script>
