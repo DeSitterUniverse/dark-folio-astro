@@ -1,0 +1,146 @@
+---
+/**
+ * MouseGlow.astro
+ * A CSS-only mouse-following radial glow effect.
+ * Uses a fixed-position div with a radial gradient that tracks
+ * the cursor via CSS custom properties. No canvas, no z-index conflicts.
+ * Also includes subtle floating ambient orbs via CSS animations.
+ */
+---
+
+<!-- Mouse-tracking glow -->
+<div id="mouse-glow" aria-hidden="true"></div>
+
+<!-- Ambient floating orbs (CSS-only, no JS) -->
+<div class="ambient-orbs" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="orb orb-5"></div>
+</div>
+
+<script>
+  const glow = document.getElementById("mouse-glow");
+  if (glow) {
+    document.addEventListener("mousemove", (e: MouseEvent) => {
+      glow.style.setProperty("--glow-x", `${e.clientX}px`);
+      glow.style.setProperty("--glow-y", `${e.clientY}px`);
+      glow.style.opacity = "1";
+    });
+
+    document.addEventListener("mouseleave", () => {
+      glow.style.opacity = "0";
+    });
+  }
+</script>
+
+<style>
+  /* Mouse-following glow — large soft radial gradient */
+  #mouse-glow {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(
+      600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+      rgba(167, 139, 250, 0.06),
+      transparent 40%
+    );
+  }
+
+  /* ─── Ambient Floating Orbs ─── */
+  .ambient-orbs {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    will-change: transform;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: #a78bfa;
+    top: 10%;
+    left: 15%;
+    animation: float-1 25s ease-in-out infinite;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: #7c3aed;
+    top: 60%;
+    right: 10%;
+    animation: float-2 30s ease-in-out infinite;
+  }
+
+  .orb-3 {
+    width: 350px;
+    height: 350px;
+    background: #8b5cf6;
+    bottom: 20%;
+    left: 40%;
+    animation: float-3 20s ease-in-out infinite;
+  }
+
+  .orb-4 {
+    width: 300px;
+    height: 300px;
+    background: #6d28d9;
+    top: 40%;
+    left: 60%;
+    animation: float-4 35s ease-in-out infinite;
+  }
+
+  .orb-5 {
+    width: 250px;
+    height: 250px;
+    background: #a78bfa;
+    top: 80%;
+    left: 20%;
+    animation: float-5 28s ease-in-out infinite;
+  }
+
+  @keyframes float-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(80px, -60px) scale(1.1); }
+    50% { transform: translate(-40px, 40px) scale(0.9); }
+    75% { transform: translate(60px, 80px) scale(1.05); }
+  }
+
+  @keyframes float-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-70px, 50px) scale(1.15); }
+    66% { transform: translate(50px, -70px) scale(0.85); }
+  }
+
+  @keyframes float-3 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(100px, -50px); }
+  }
+
+  @keyframes float-4 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(-90px, 30px) scale(1.1); }
+    50% { transform: translate(40px, -80px) scale(0.95); }
+    75% { transform: translate(-30px, -40px) scale(1.05); }
+  }
+
+  @keyframes float-5 {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(60px, -40px); }
+    66% { transform: translate(-40px, 60px); }
+  }
+</style>

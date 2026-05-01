@@ -11,7 +11,7 @@ import PauseLight from "phosphor-astro/PauseLight.astro";
 const project = {
   title: "GPGPU N-Body Galaxy Merger",
   description:
-    "A high-performance, real-time N-body physics engine running directly in the background of this portfolio. By offloading O(n²) gravitational calculations to the GPU via custom GLSL Compute Shaders, the engine simulates the collision of two galaxies with thousands of individual stars simultaneously at a flawless 60 FPS. Featuring accurate orbital mechanics, inelastic black hole mergers, and dynamical friction, the simulation's math naturally exhibits emergent behavior. Watch as the rapidly shifting gravitational fields trigger '<a href=\"https://academic.oup.com/mnras/article/136/1/101/2602554\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-accent hover:underline\">violent relaxation</a>', authentically scrambling the stars' orderly orbits and transforming two flat spiral disks into a sprawling, 3D elliptical galaxy.",
+    'A high-performance, real-time N-body physics engine running directly in the background of this portfolio. By offloading O(n²) gravitational calculations to the GPU via custom GLSL Compute Shaders, the engine simulates the collision of two galaxies with thousands of individual stars simultaneously at 60 FPS. Featuring accurate orbital mechanics, inelastic black hole mergers, and dynamical friction, the simulation\'s math naturally exhibits emergent behavior. Watch as the rapidly shifting gravitational fields trigger \'<a href="https://academic.oup.com/mnras/article/136/1/101/2602554" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">violent relaxation</a>\', authentically scrambling the stars\' orderly orbits and transforming two flat spiral disks into a sprawling, 3D elliptical galaxy.',
   tech: ["Astro", "Three.js", "WebGL", "GLSL", "TypeScript"],
   github:
     "https://github.com/DeSitterUniverse/dark-folio-astro/blob/master/src/components/ParticleBackground.astro",
@@ -44,10 +44,11 @@ const project = {
         </div>
       </div>
 
-      <p 
-        class="text-sm text-text-secondary leading-relaxed mb-5" 
+      <p
+        class="text-sm text-text-secondary leading-relaxed mb-5"
         set:html={project.description}
-      />
+      >
+      </p>
 
       <div class="flex flex-wrap gap-2 mb-6">
         {
