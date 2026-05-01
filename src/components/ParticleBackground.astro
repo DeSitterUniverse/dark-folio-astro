@@ -21,8 +21,8 @@
     }
   }
 
-  // Persistent state
-  let currentTextureWidth = 72;
+  // Persistent state. Detect screen size: if mobile (<768px), default to 32, otherwise 72.
+  let currentTextureWidth = window.innerWidth < 768 ? 32 : 72;
   let isPaused = false;
 
   const init = () => {

@@ -188,7 +188,7 @@ const project = {
     const sliderVal = document.getElementById("galaxy-stars-value");
 
     // PAUSE BUTTON LOGIC
-    // We check for 'data-loaded' to prevent attaching the click event twice
+    // Check for 'data-loaded' to prevent attaching the click event twice
     if (btn && !btn.hasAttribute("data-loaded")) {
       btn.setAttribute("data-loaded", "true");
 
@@ -212,7 +212,6 @@ const project = {
           iconPlay?.classList.add("hidden");
         }
 
-        // Shout to the ParticleBackground that we want to pause
         window.dispatchEvent(
           new CustomEvent("galaxy:pause", {
             detail: { paused: window.galaxyIsPaused },
@@ -224,6 +223,13 @@ const project = {
     // SLIDER LOGIC
     if (slider && !slider.hasAttribute("data-loaded")) {
       slider.setAttribute("data-loaded", "true");
+
+      // MOBILE SYNC: Update the UI to match the engine's mobile default
+      const isMobile = window.innerWidth < 768;
+      const initialWidth = isMobile ? 32 : 72;
+
+      slider.value = initialWidth.toString();
+      if (sliderVal) sliderVal.textContent = `${initialWidth}x${initialWidth}`;
 
       // 'input' fires instantly while dragging (updates the text)
       slider.addEventListener("input", (e) => {
