@@ -6,6 +6,7 @@
  */
 import { projects } from "../data/projects";
 import ProjectCard from "./ProjectCard.astro";
+import InteractiveGalaxyCard from "./InteractiveGalaxyCard.astro";
 ---
 
 <section id="projects" class="relative py-24 sm:py-32">
@@ -23,6 +24,7 @@ import ProjectCard from "./ProjectCard.astro";
 
     <!-- Project grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <InteractiveGalaxyCard />
       {projects.map((project) => (
         <ProjectCard project={project} />
       ))}

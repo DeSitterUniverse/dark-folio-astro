@@ -52,7 +52,7 @@ const experiences = [
     organization: "University of Guelph",
     location: "Sep 2017 — Apr 2022",
     period: "Sep 2017 — Apr 2022",
-    description: "Co-op Degree",
+    description: "Honours Degree",
     details: [
       "Minor in Statistics",
       "Graduated with Distinction"
@@ -101,7 +101,7 @@ const experiences = [
                   <p class="text-sm font-mono text-text-muted mb-6">{item.location}</p>
                   
                   <div class="space-y-8">
-                    {item.roles.map((role, rIndex) => (
+                    {item.roles?.map((role, rIndex) => (
                       <div class={rIndex !== 0 ? "pt-6 border-t border-border-dim/40" : ""}>
                          <h4 class="text-lg font-bold text-text-primary mb-1">{role.title}</h4>
                          <p class="text-xs font-mono text-accent mb-3 uppercase tracking-wider">{role.team}</p>
@@ -125,7 +125,7 @@ const experiences = [
                   <p class="text-sm font-mono text-text-muted mb-4">{item.organization}</p>
                   <p class="text-sm text-text-secondary leading-relaxed mb-4">{item.description}</p>
                   <ul class={`space-y-1.5 ${index % 2 === 0 ? 'sm:items-end' : 'sm:items-start'} flex flex-col`}>
-                    {item.details.map((detail) => (
+                    {item.details?.map((detail) => (
                       <li class="text-xs text-text-muted flex items-center gap-2">
                         {index % 2 !== 0 && <span class="w-1 h-1 rounded-full bg-accent/40"></span>}
                         {detail}

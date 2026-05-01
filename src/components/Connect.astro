@@ -6,7 +6,6 @@
  */
 import GithubLogoLight from "phosphor-astro/GithubLogoLight.astro";
 import LinkedinLogoLight from "phosphor-astro/LinkedinLogoLight.astro";
-import EnvelopeLight from "phosphor-astro/EnvelopeLight.astro";
 import FilePdfLight from "phosphor-astro/FilePdfLight.astro";
 
 const links = [
@@ -22,15 +21,10 @@ const links = [
     icon: "linkedin",
     external: true,
   },
-  {
-    label: "Email",
-    href: "mailto:hello@skyeibrahim.dev",
-    icon: "email",
-    external: false,
-  },
+
   {
     label: "Resume",
-    href: "/resume.pdf",
+    href: "/0010resume.pdf",
     icon: "resume",
     external: false,
     download: true,
@@ -61,7 +55,7 @@ const links = [
         >
           {link.icon === "github" && <GithubLogoLight class="w-4 h-4" />}
           {link.icon === "linkedin" && <LinkedinLogoLight class="w-4 h-4" />}
-          {link.icon === "email" && <EnvelopeLight class="w-4 h-4" />}
+
           {link.icon === "resume" && <FilePdfLight class="w-4 h-4" />}
           {link.label}
         </a>
