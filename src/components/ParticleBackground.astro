@@ -23,6 +23,8 @@
 
   // Persistent state. Detect screen size: if mobile (<768px), default to 32, otherwise 72.
   let currentTextureWidth = window.innerWidth < 768 ? 32 : 72;
+  let currentGalaxyRadius = 35;
+  let currentOffset = 25;
   let isPaused = false;
 
   const init = () => {
@@ -60,10 +62,10 @@
 
     // --- Galaxy Morphology ---
     const CORE_MASS = 4000000; // Mass of the Supermassive Black Holes
-    const GALAXY_RADIUS = 35; // Radius of the galaxies
-    const OFFSET = 25; // Spawn distance from the center
+    //const GALAXY_RADIUS = 35; // Radius of the galaxies
+    //const OFFSET = 25; // Spawn distance from the center
     const MERGE_FACTOR = 0.98; // Forces an elliptical orbit that degrades into a crash
-    const MERGE_RADIUS = 5.0; // The Event Horizon. If BHs get this close, they fuse.
+    const MERGE_RADIUS = 4.0; // The Event Horizon. If BHs get this close, they fuse.
 
     // --- Visuals ---
     const PARTICLE_BASE_SIZE = 150.0;
@@ -121,7 +123,9 @@
       const posData = dtPosition.image.data as Float32Array;
       const velData = dtVelocity.image.data as Float32Array;
 
-      const binaryVelocity = Math.sqrt((GRAVITY * CORE_MASS) / (2 * OFFSET));
+      const binaryVelocity = Math.sqrt(
+        (GRAVITY * CORE_MASS) / (2 * currentOffset)
+      );
       const sysVz = binaryVelocity * MERGE_FACTOR;
 
       const bh1_index = 0;
@@ -140,7 +144,7 @@
         const p = i * 4;
         const isGalaxy1 = i < count / 2;
 
-        const cx = isGalaxy1 ? -OFFSET : OFFSET;
+        const cx = isGalaxy1 ? -currentOffset : currentOffset;
         const cz = isGalaxy1 ? -10 : 10;
         const gVx = 0;
         const gVz = isGalaxy1 ? sysVz : -sysVz;
@@ -157,11 +161,11 @@
           continue;
         }
 
-        const r = Math.pow(Math.random(), 2.0) * GALAXY_RADIUS + 4.0;
+        const r = Math.pow(Math.random(), 2.0) * currentGalaxyRadius + 4.0;
         const theta = Math.random() * Math.PI * 2;
         const localX = Math.cos(theta) * r;
         const localZ = Math.sin(theta) * r;
-        const localY = (Math.random() - 0.5) * (GALAXY_RADIUS - r) * 0.12;
+        const localY = (Math.random() - 0.5) * (currentGalaxyRadius - r) * 0.12;
 
         posData[p + 0] = cx + localX;
         posData[p + 1] = localY;
@@ -463,10 +467,24 @@
     };
     window.addEventListener("galaxy:resize", onGalaxyResize);
 
+    const onGalaxyRadius = (e: Event) => {
+      currentGalaxyRadius = (e as CustomEvent).detail.radius;
+      buildGalaxy(currentTextureWidth);
+    };
+    window.addEventListener("galaxy:radius", onGalaxyRadius);
+
+    const onGalaxyOffset = (e: Event) => {
+      currentOffset = (e as CustomEvent).detail.offset;
+      buildGalaxy(currentTextureWidth);
+    };
+    window.addEventListener("galaxy:offset", onGalaxyOffset);
+
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("galaxy:pause", onPause);
       window.removeEventListener("galaxy:resize", onGalaxyResize);
+      window.removeEventListener("galaxy:radius", onGalaxyRadius);
+      window.removeEventListener("galaxy:offset", onGalaxyOffset);
       window.cancelAnimationFrame(animId);
       if (geometry) geometry.dispose();
       if (material) material.dispose();

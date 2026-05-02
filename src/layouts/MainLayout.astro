@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar.astro";
 import ParticleBackground from "../components/ParticleBackground.astro";
 import StatsMonitor from "../components/StatsMonitor.astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
+import Analytics from "@vercel/analytics/astro";
 
 interface Props {
   title: string;
@@ -54,8 +55,9 @@ const {
     <Navbar />
     <slot />
 
-    <!-- Vercel Speed Insights -->
+    <!-- Vercel Speed Insights & Analytics -->
     <SpeedInsights />
+    <Analytics />
 
     <style>
       @import "../styles/global.css";
