@@ -17,7 +17,7 @@ A high-performance, dark-minimalist developer portfolio built with **Astro**, **
 - **Technical Spec-Sheet**: Professional high-density skills grid with backdrop-blur glassmorphism for maximum readability against the active simulation.
 - **Unified Experience Timeline**: Consolidated career progression showing role-based growth and technical evolution within major tenures.
 - **Dynamic Title Rotation**: Custom typewriter effect seamlessly cycling through technical roles (Data Engineer → Full-Stack Developer → Automation Developer).
-- **Non-Blocking Architecture**: Leverages Astro's partial hydration to guarantee that core layouts and typography render instantly with zero JavaScript overhead, deferring the heavy WebGL engine to load asynchronously without blocking the main thread.
+- **Non-Blocking Architecture**: Leverages Astro's Islands Architecture to guarantee that core layouts and typography render instantly with zero JavaScript overhead, deferring the heavy WebGL engine to load asynchronously without blocking the main thread.
 
 ## Technology Stack
 
@@ -42,7 +42,7 @@ A high-performance, dark-minimalist developer portfolio built with **Astro**, **
 └── package.json          # Dependencies and scripts
 ```
 
-## 🧞 Commands
+## Commands
 
 | Command | Action |
 | :--- | :--- |
@@ -50,12 +50,6 @@ A high-performance, dark-minimalist developer portfolio built with **Astro**, **
 | `npm run dev` | Spins up a local development server |
 | `npm run build` | Builds the static site for production |
 | `npm run preview` | Previews the production build locally |
-
-## 📐 Design Philosophy
-
-- **Minimalist Dark Theme**: Deep black surfaces (`#09090b`) with monochromatic accents and soft purple glows.
-- **Typography-First**: Heavy use of "JetBrains Mono" and "Inter" for a clean, schematic "developer" vibe.
-- **Proximity Awareness**: Interactive elements should feel alive and aware of the user's presence without being distracting.
 
 ---
 

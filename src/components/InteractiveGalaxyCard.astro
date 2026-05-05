@@ -95,7 +95,7 @@ const project = {
             type="range"
             id="galaxy-stars-slider"
             min="32"
-            max="192"
+            max="160"
             step="8"
             value="72"
             class="w-full h-1 rounded-lg appearance-none cursor-pointer accent-accent danger-slider"
@@ -197,14 +197,14 @@ const project = {
   }
   .danger-slider {
     /* 
-      Creates a hard stop at 75%. 
-      Left side is your normal border color, right side fades into warning red. 
+      set at 128
+      Left side is border color, right side fades into red. 
     */
     background: linear-gradient(
       to right,
       var(--color-border-dim) 0%,
-      var(--color-border-dim) 60%,
-      rgba(239, 68, 68, 0.3) 60%,
+      var(--color-border-dim) 75%,
+      rgba(239, 68, 68, 0.3) 75%,
       /* Soft Tailwind red-500 */ rgba(239, 68, 68, 0.8) 100%
         /* Stronger red at the very edge */
     );

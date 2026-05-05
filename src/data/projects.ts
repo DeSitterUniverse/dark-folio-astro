@@ -11,7 +11,7 @@ export const projects: Project[] = [
   {
     title: "Cephalon",
     description:
-      "A fully self-contained, locally-hosted intelligence platform. Merges zero-dependency native windowing via Tauri v2 with the extreme out-of-core scalability of LanceDB. It can take any file type, multi-sheet Excel files and more! Instantly retrieve explicitly cited answers using completely local AI",
+      "A fully self-contained, locally-hosted intelligence platform. This language-agnostic system can load any model via its .gguf file, ensuring compatibility with future releases. It processes all file types, including multi-sheet Excel documents, allowing you to instantly retrieve answers with explicit citations using completely local AI. All of this is housed in an ultra-lightweight frontend featuring zero-dependency native windowing via Tauri v2, backed by the out-of-core scalability of LanceDB.",
     tech: ["TypeScript", "Python", "Rust", "Tauri", "React", "LanceDB", "ONNX"],
     github: "https://github.com/DeSitterUniverse/Cephalon",
   },
