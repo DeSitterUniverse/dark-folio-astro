@@ -11,13 +11,6 @@
 <script>
   import Stats from "stats.js";
 
-  // Tell TypeScript about our global variable so it doesn't throw errors
-  declare global {
-    interface Window {
-      appStats?: Stats;
-    }
-  }
-
   const initStats = () => {
     const container = document.getElementById("stats-container");
     if (!container) return;
