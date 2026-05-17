@@ -11,7 +11,7 @@ export const skillCategories: SkillCategory[] = [
   },
   {
     title: "Data & Cloud",
-    items: ["Azure (ADF, Synapse)", "Snowflake", "Informatica Cloud", "AWS", "GCP", "Elasticsearch", "Oracle / SQL Server", "Qlik Enterprise Manager", "LanceDB", "Databricks", "Snowflake"]
+    items: ["Azure (ADF, Synapse)", "Snowflake", "Informatica Cloud", "AWS", "GCP", "Elasticsearch", "Oracle / SQL Server", "Qlik Enterprise Manager", "LanceDB", "Databricks", "Snowflake", "SQLite"]
   },
   {
     title: "Backend & Infrastructure",

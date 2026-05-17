@@ -11,8 +11,8 @@ export const projects: Project[] = [
   {
     title: "Cephalon",
     description:
-      "A fully self-contained, locally-hosted intelligence platform. This language-agnostic system can load any model via its .gguf file, ensuring compatibility with future releases. It processes all file types, including multi-sheet Excel documents, allowing you to instantly retrieve answers with explicit citations using completely local AI. All of this is housed in an ultra-lightweight frontend featuring zero-dependency native windowing via Tauri v2, backed by the out-of-core scalability of LanceDB.",
-    tech: ["TypeScript", "Python", "Rust", "Tauri", "React", "LanceDB", "ONNX"],
+      "Cephalon is a local-first desktop RAG workbench for private document intelligence. It indexes local files, Obsidian vaults, Office documents, PDFs, spreadsheets, and text-like unknown files into a transparent retrieval pipeline using SQLite metadata, SQLite FTS5 lexical search, LanceDB dense vectors, Jina ONNX embeddings, and Jina ONNX reranking. Local GGUF chat models are explicitly loaded through Vulkan-enabled llama.cpp, with model/backend diagnostics exposed in the app. Answers stream with citations, source scores, confidence/no-answer diagnostics, retrieval traces, chat history, index health, eval metrics, and numeric metrics written locally for later analysis.",
+    tech: ["TypeScript", "Python", "Rust", "Tauri", "React", "LanceDB", "ONNX", "SQLite"],
     github: "https://github.com/DeSitterUniverse/Cephalon",
   },
 ];
