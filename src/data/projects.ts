@@ -22,4 +22,11 @@ export const projects: Project[] = [
     tech: ["Rust", "Streaming Data", "Sensor Data", "Lossless Compression"],
     github: "https://github.com/DeSitterUniverse/Titchy-rs",
   },
+  {
+    title: "ssd-flash-id",
+    description:
+      "Ported and extended the open-source ssd-flash-id project for Windows, preserving its controller and NAND identification logic while implementing native Windows NVMe/ATA transports, hardware discovery, safety enforcement, diagnostics, and compatibility improvements.",
+    tech: ["Rust", "Windows", "NVMe", "Storage Hardware"],
+    github: "https://github.com/DeSitterUniverse/ssd-flash-id",
+  },
 ];
