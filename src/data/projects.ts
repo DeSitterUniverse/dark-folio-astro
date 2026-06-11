@@ -15,4 +15,11 @@ export const projects: Project[] = [
     tech: ["TypeScript", "Python", "Rust", "Tauri", "React", "LanceDB", "ONNX", "SQLite"],
     github: "https://github.com/DeSitterUniverse/Cephalon",
   },
+  {
+    title: "Titchy-rs",
+    description:
+      "A Rust implementation of Titchy for lossless compression of fixed-width sensor time series, with bounded-memory streaming, adaptive deduplication, and indexed random access.",
+    tech: ["Rust", "Streaming Data", "Sensor Data", "Lossless Compression"],
+    github: "https://github.com/DeSitterUniverse/Titchy-rs",
+  },
 ];
