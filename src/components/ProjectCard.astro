@@ -15,6 +15,19 @@ interface Props {
 }
 
 const { project } = Astro.props;
+const descriptionLinkIndex = project.descriptionLink
+  ? project.description.indexOf(project.descriptionLink.text)
+  : -1;
+const descriptionBeforeLink =
+  descriptionLinkIndex >= 0
+    ? project.description.slice(0, descriptionLinkIndex)
+    : project.description;
+const descriptionAfterLink =
+  descriptionLinkIndex >= 0 && project.descriptionLink
+    ? project.description.slice(
+        descriptionLinkIndex + project.descriptionLink.text.length,
+      )
+    : "";
 ---
 
 <div class="card-perspective" data-glow-card>
@@ -29,7 +42,16 @@ const { project } = Astro.props;
 
       <!-- Description -->
       <p class="text-sm text-text-secondary leading-relaxed mb-5">
-        {project.description}
+        {descriptionBeforeLink}
+        {descriptionLinkIndex >= 0 && project.descriptionLink && (
+          <a
+            href={project.descriptionLink.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-accent underline decoration-accent/40 underline-offset-2 transition-colors duration-200 hover:text-accent-bright hover:decoration-accent"
+          >{project.descriptionLink.text}</a>
+        )}
+        {descriptionAfterLink}
       </p>
 
       <!-- Tech tags -->

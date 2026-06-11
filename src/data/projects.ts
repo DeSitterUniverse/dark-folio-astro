@@ -2,6 +2,10 @@
 export interface Project {
   title: string;
   description: string;
+  descriptionLink?: {
+    text: string;
+    url: string;
+  };
   tech: string[];
   github: string;
   demo?: string;
@@ -19,6 +23,10 @@ export const projects: Project[] = [
     title: "Titchy-rs",
     description:
       "A Rust implementation of Titchy for lossless compression of fixed-width sensor time series, with bounded-memory streaming, adaptive deduplication, and indexed random access.",
+    descriptionLink: {
+      text: "Titchy",
+      url: "https://doi.org/10.1109/JIOT.2021.3081868",
+    },
     tech: ["Rust", "Streaming Data", "Sensor Data", "Lossless Compression"],
     github: "https://github.com/DeSitterUniverse/Titchy-rs",
   },
@@ -26,7 +34,7 @@ export const projects: Project[] = [
     title: "ssd-flash-id",
     description:
       "Ported and extended the open-source ssd-flash-id project for Windows, preserving its controller and NAND identification logic while implementing native Windows NVMe/ATA transports, hardware discovery, safety enforcement, diagnostics, and compatibility improvements.",
-    tech: ["Rust", "Windows", "NVMe", "Storage Hardware"],
+    tech: ["Rust", "Windows API", "Systems Programming", "FFI"],
     github: "https://github.com/DeSitterUniverse/ssd-flash-id",
   },
 ];
