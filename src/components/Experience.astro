@@ -48,7 +48,6 @@ const experiences = [
     title: "Bachelor's (Honours) in Computer Science",
     organization: "University of Guelph",
     period: "Sep 2017 — Apr 2022",
-    description: "Honours Degree",
     details: ["Minor in Statistics", "Graduated with Distinction"],
   },
 ];
@@ -80,7 +79,6 @@ const experiences = [
           )) : (
             <div class="role-row">
               <h4>{item.title}</h4>
-              <p>{item.description}</p>
               <ul class="education-details">{item.details?.map((detail) => <li>{detail}</li>)}</ul>
             </div>
           )}
