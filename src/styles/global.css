@@ -21,7 +21,7 @@
 :root {
   --rail-width: clamp(220px, 18vw, 292px);
   --content-max: 1180px;
-  --page-background: #000;
+  --page-background: #121018;
 }
 html[data-theme="galaxy"] { --page-background: #000; }
 html[data-theme="dark"] { --page-background: #121018; }
@@ -31,7 +31,7 @@ html[data-text-tone="warm"] {
   --color-text-muted: #aa8d88;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; color-scheme: dark; -webkit-font-smoothing: antialiased; }
+html { min-height: 100%; scroll-behavior: smooth; color-scheme: dark; background: var(--page-background); -webkit-font-smoothing: antialiased; }
 body {
   margin: 0;
   min-height: 100vh;
@@ -112,7 +112,9 @@ html[data-theme="dark"] .editorial-rail { background: #1a1623; }
 .text-tone-selector { top: 68px; }
 .text-tone-selector.solo { top: 18px; }
 .theme-selector button, .text-tone-selector button { position: relative; display: grid; width: 34px; height: 34px; padding: 0; place-items: center; border: 0; border-radius: 50%; background: var(--page-background); color: var(--color-accent); cursor: pointer; }
-.theme-selector button[aria-pressed="true"], .text-tone-selector button[aria-pressed="true"] { background: #f4f1eb; color: #09080b; }
+.theme-selector button[aria-pressed="true"] { background: #f4f1eb; color: #09080b; }
+html:not([data-text-tone="warm"]) .text-tone-selector button[data-text-tone="default"],
+html[data-text-tone="warm"] .text-tone-selector button[data-text-tone="warm"] { background: #f4f1eb; color: #09080b; }
 .theme-selector svg { width: 18px; height: 18px; }
 .dark-theme-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); }
 .tone-dot { width: 11px; height: 11px; border: 1px solid rgba(255,255,255,.24); border-radius: 50%; }

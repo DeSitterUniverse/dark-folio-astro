@@ -15,10 +15,9 @@ A dark, editorial developer portfolio built with **Astro**, **Tailwind CSS**, **
   - **Plummer Softening**: Prevents infinite acceleration during close particle encounters.
   - **Animated Lifecycle**: Particle fizzle transitions handle startup, shutdown, theme changes, and simulation rebuilds.
 
-- **Background Theme Selector**: Dark mode is the default. Visitors can enable the galaxy merger from the global selector or directly from its project controls.
-- **Reading Accessibility**: A persistent text-colour selector offers the standard palette or a warmer reading tone, with reduced-motion support and accessible keyboard controls.
+- **Background Theme Selector**: Dark mode (`#121018`) is the default. Visitors can enable the black (`#000000`) galaxy merger background from the global selector or directly from its project controls.
+- **Reading Accessibility**: A persistent text-colour selector offers the standard off-white (`#E9E4DA`) or a warmer reading tone (`#F7D6C8`), with reduced-motion support and accessible keyboard controls.
 - **Editorial Layout**: A constrained reading width, collapsible project and experience details, and responsive navigation keep long technical content scannable.
-- **Astro Content Collections**: The separate Dark-themed Blog route is ready for typed Markdown or MDX posts.
 
 ## Technology Stack
 

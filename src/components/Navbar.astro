@@ -43,10 +43,19 @@ const { showThemeSelector = true, initialTheme = "dark" } = Astro.props;
 )}
 
 <div class:list={["text-tone-selector", { solo: !showThemeSelector }]} role="group" aria-label="Text colour">
-  <button type="button" data-text-tone="default" aria-label="Default text colour" aria-pressed="true" data-tooltip="Default text colour">
+  <button type="button" data-text-tone="default" aria-label="Default text colour" aria-pressed="false" data-tooltip="Default text colour">
     <span class="tone-dot tone-dot-default" aria-hidden="true"></span>
   </button>
   <button type="button" data-text-tone="warm" aria-label="Warm text colour" aria-pressed="false" data-tooltip="Warm text colour">
     <span class="tone-dot tone-dot-warm" aria-hidden="true"></span>
   </button>
 </div>
+
+<script is:inline>
+  (() => {
+    const tone = document.documentElement.dataset.textTone === "warm" ? "warm" : "default";
+    document.querySelectorAll("[data-text-tone]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.textTone === tone));
+    });
+  })();
+</script>
