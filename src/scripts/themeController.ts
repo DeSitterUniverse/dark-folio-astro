@@ -69,7 +69,7 @@ export const applyTextTone = (
 ) => {
   documentRef.documentElement.dataset.textTone = tone;
   try {
-    documentRef.defaultView?.localStorage.setItem("portfolio-text-tone", tone);
+    documentRef.defaultView?.sessionStorage.setItem("portfolio-text-tone", tone);
   } catch {
     // Storage can be unavailable in privacy-restricted browsing contexts.
   }

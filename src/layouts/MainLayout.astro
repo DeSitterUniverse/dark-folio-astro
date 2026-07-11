@@ -31,7 +31,7 @@ const {
   <head>
     <script is:inline>
       try {
-        const tone = localStorage.getItem("portfolio-text-tone");
+        const tone = sessionStorage.getItem("portfolio-text-tone");
         if (tone === "warm" || tone === "default") {
           document.documentElement.dataset.textTone = tone;
         }

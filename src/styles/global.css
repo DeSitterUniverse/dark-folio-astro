@@ -230,6 +230,7 @@ html[data-theme="dark"] .site-footer { background: rgba(26, 22, 35, 0.72); }
 .contact-links a:hover { border-color: var(--color-accent); background: var(--color-accent-dim); color: var(--color-text-primary); }
 .contact-links svg { width: 18px; height: 18px; }
 #galaxy-canvas { opacity: 1; }
+html:not([data-theme="galaxy"]) #galaxy-canvas { visibility: hidden; }
 #stats-container { transition: opacity 200ms ease; }
 html[data-theme="dark"] #stats-container { opacity: 0; pointer-events: none; }
 
