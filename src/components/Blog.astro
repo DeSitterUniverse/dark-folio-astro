@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+
+const blogFiles = import.meta.glob("../content/blog/**/*.{md,mdx}");
+const posts = (Object.keys(blogFiles).length > 0 ? await getCollection("blog") : [])
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+---
+
+<section id="blog" class="editorial-section blog-section">
+  <header class="section-heading">
+    <h2>Blog</h2>
+    <p class="section-subtitle">Thoughts and documentation about things that interest me</p>
+  </header>
+  {posts.length > 0 && (
+    <div class="blog-list">
+      {posts.map((post) => (
+        <article>
+          <time datetime={post.data.publishedAt.toISOString()}>
+            {post.data.publishedAt.toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" })}
+          </time>
+          <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+          <p>{post.data.description}</p>
+        </article>
+      ))}
+    </div>
+  )}
+</section>

@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import MainLayout from "../../layouts/MainLayout.astro";
+
+export const getStaticPaths = (async () => {
+  const blogFiles = import.meta.glob("../../content/blog/**/*.{md,mdx}");
+  if (Object.keys(blogFiles).length === 0) return [];
+
+  const posts = (await getCollection("blog")).filter((post) => !post.data.draft);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+interface Props { post: CollectionEntry<"blog"> }
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<MainLayout title={`${post.data.title} — Skye Ibrahim`} description={post.data.description} initialTheme="dark" showThemeSelector={false}>
+  <main class="blog-post">
+    <article class="editorial-section">
+      <a class="back-link" href="/#blog">Back to Blog</a>
+      <time datetime={post.data.publishedAt.toISOString()}>
+        {post.data.publishedAt.toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}
+      </time>
+      <h1>{post.data.title}</h1>
+      <div class="prose"><Content /></div>
+    </article>
+  </main>
+</MainLayout>
+
+<style>
+  .blog-post article { min-height: 100vh; }
+  .back-link, time { color: var(--color-text-muted); font: 0.72rem var(--font-mono); }
+  h1 { max-width: 850px; margin: 40px 0; font: 500 clamp(3rem, 7vw, 6rem)/0.95 var(--font-serif); letter-spacing: -0.045em; }
+  .prose { max-width: 760px; color: var(--color-text-secondary); font-size: 1.05rem; }
+  .prose :global(h2), .prose :global(h3) { color: var(--color-text-primary); font-family: var(--font-serif); font-weight: 500; }
+  .prose :global(a) { color: var(--color-accent-bright); text-decoration: underline; text-underline-offset: 3px; }
+</style>

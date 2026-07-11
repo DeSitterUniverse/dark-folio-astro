@@ -86,15 +86,28 @@ export const initGalaxyEngine = () => {
   let geometry: THREE.BufferGeometry | null = null;
   let material: THREE.ShaderMaterial | null = null;
   let points: THREE.Points | null = null;
+  let currentFizzle = 0;
+  let themeActive = document.documentElement.dataset.theme !== "dark";
+  let fizzleAnimId = 0;
+
+  const disposeGalaxy = () => {
+    if (points) scene.remove(points);
+    geometry?.dispose();
+    material?.dispose();
+    gpuCompute?.dispose?.();
+    points = null;
+    geometry = null;
+    material = null;
+    gpuCompute = null;
+    positionVariable = null;
+    velocityVariable = null;
+  };
 
   // ============================================================================
   // 2. GALAXY BUILDER (Runs initially, and every time the slider moves)
   // ============================================================================
   const buildGalaxy = (width: number) => {
-    // Safely dispose of the old galaxy data if it exists
-    if (geometry) geometry.dispose();
-    if (material) material.dispose();
-    if (points) scene.remove(points);
+    disposeGalaxy();
 
     const count = width * width;
     gpuCompute = new GPUComputationRenderer(width, width, renderer);
@@ -356,26 +369,29 @@ export const initGalaxyEngine = () => {
         texturePosition: { value: null },
         uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
         uBaseSize: { value: PARTICLE_BASE_SIZE },
+        uFizzle: { value: currentFizzle },
       },
       vertexShader: `
         uniform sampler2D texturePosition;
         uniform float uPixelRatio;
         uniform float uBaseSize;
+        uniform float uFizzle;
         attribute vec2 reference;
         attribute float aSize;
         varying vec3 vColor;
         
         void main() {
           vec4 posData = texture2D(texturePosition, reference);
+          float fizzleSeed = fract(sin(dot(reference, vec2(12.9898, 78.233))) * 43758.5453);
           
-          if (posData.w <= 0.0) {
+          if (posData.w <= 0.0 || fizzleSeed > uFizzle) {
              gl_Position = vec4(9999.0, 9999.0, 9999.0, 1.0);
              return;
           }
 
           vec4 viewPosition = viewMatrix * modelMatrix * vec4(posData.xyz, 1.0);
           gl_Position = projectionMatrix * viewPosition;
-          gl_PointSize = (aSize * uBaseSize * uPixelRatio) * (1.0 / -viewPosition.z);
+          gl_PointSize = (aSize * uBaseSize * uPixelRatio) * (1.0 / -viewPosition.z) * mix(0.45, 1.0, uFizzle);
           vColor = color;
         }
       `,
@@ -394,8 +410,43 @@ export const initGalaxyEngine = () => {
     scene.add(points);
   };
 
-  // Execute the initial build
-  buildGalaxy(currentTextureWidth);
+  const setFizzle = (value: number) => {
+    currentFizzle = THREE.MathUtils.clamp(value, 0, 1);
+    if (material?.uniforms.uFizzle) {
+      material.uniforms.uFizzle.value = currentFizzle;
+    }
+  };
+
+  const animateFizzle = (target: number, onComplete?: () => void) => {
+    window.cancelAnimationFrame(fizzleAnimId);
+    const start = currentFizzle;
+    const startedAt = performance.now();
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const duration = reduceMotion ? 1 : 360;
+
+    const frame = (now: number) => {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = progress * progress * (3 - 2 * progress);
+      setFizzle(THREE.MathUtils.lerp(start, target, eased));
+      if (progress < 1) {
+        fizzleAnimId = window.requestAnimationFrame(frame);
+      } else {
+        if (target === 0) renderer.clear();
+        onComplete?.();
+      }
+    };
+
+    fizzleAnimId = window.requestAnimationFrame(frame);
+  };
+
+  const rebuildWithFizzle = (update: () => void) => {
+    animateFizzle(0, () => {
+      update();
+      buildGalaxy(currentTextureWidth);
+      setFizzle(0);
+      if (themeActive) animateFizzle(1);
+    });
+  };
 
   // ============================================================================
   // 3. ANIMATION & EVENTS
@@ -410,16 +461,18 @@ export const initGalaxyEngine = () => {
 
     if (elapsed > fpsInterval) {
       then = now - (elapsed % fpsInterval);
-      if (window.appStats) window.appStats.begin();
+      if (themeActive || currentFizzle > 0.001) {
+        if (window.appStats) window.appStats.begin();
 
-      if (!isPaused && gpuCompute && material) {
-        gpuCompute.compute();
-        material.uniforms.texturePosition!.value =
-          gpuCompute.getCurrentRenderTarget(positionVariable).texture;
+        if (themeActive && !isPaused && gpuCompute && material) {
+          gpuCompute.compute();
+          material.uniforms.texturePosition!.value =
+            gpuCompute.getCurrentRenderTarget(positionVariable).texture;
+        }
+        renderer.render(scene, camera);
+
+        if (window.appStats) window.appStats.end();
       }
-      renderer.render(scene, camera);
-
-      if (window.appStats) window.appStats.end();
     }
     animId = window.requestAnimationFrame(tick);
   };
@@ -444,34 +497,60 @@ export const initGalaxyEngine = () => {
   };
   window.addEventListener("galaxy:pause", onPause);
 
+  const onVisibility = (e: Event) => {
+    const visible = Boolean((e as CustomEvent<{ visible: boolean }>).detail.visible);
+    themeActive = visible;
+    if (visible) {
+      isPaused = false;
+      disposeGalaxy();
+      buildGalaxy(currentTextureWidth);
+      setFizzle(0);
+      animateFizzle(1, () => {
+        window.dispatchEvent(
+          new CustomEvent("galaxy:fizzle-complete", { detail: { visible: true } }),
+        );
+      });
+    } else {
+      animateFizzle(0, () => {
+        disposeGalaxy();
+        renderer.clear();
+        window.dispatchEvent(
+          new CustomEvent("galaxy:fizzle-complete", { detail: { visible: false } }),
+        );
+      });
+    }
+  };
+  window.addEventListener("galaxy:visibility", onVisibility);
+
   // Rebuild the data, but keep the Renderer alive!
   const onGalaxyResize = (e: Event) => {
-    currentTextureWidth = (e as CustomEvent).detail.textureWidth;
-    buildGalaxy(currentTextureWidth);
+    const textureWidth = (e as CustomEvent).detail.textureWidth;
+    rebuildWithFizzle(() => { currentTextureWidth = textureWidth; });
   };
   window.addEventListener("galaxy:resize", onGalaxyResize);
 
   const onGalaxyRadius = (e: Event) => {
-    currentGalaxyRadius = (e as CustomEvent).detail.radius;
-    buildGalaxy(currentTextureWidth);
+    const radius = (e as CustomEvent).detail.radius;
+    rebuildWithFizzle(() => { currentGalaxyRadius = radius; });
   };
   window.addEventListener("galaxy:radius", onGalaxyRadius);
 
   const onGalaxyOffset = (e: Event) => {
-    currentOffset = (e as CustomEvent).detail.offset;
-    buildGalaxy(currentTextureWidth);
+    const offset = (e as CustomEvent).detail.offset;
+    rebuildWithFizzle(() => { currentOffset = offset; });
   };
   window.addEventListener("galaxy:offset", onGalaxyOffset);
 
   return () => {
     window.removeEventListener("resize", onResize);
     window.removeEventListener("galaxy:pause", onPause);
+    window.removeEventListener("galaxy:visibility", onVisibility);
     window.removeEventListener("galaxy:resize", onGalaxyResize);
     window.removeEventListener("galaxy:radius", onGalaxyRadius);
     window.removeEventListener("galaxy:offset", onGalaxyOffset);
     window.cancelAnimationFrame(animId);
-    if (geometry) geometry.dispose();
-    if (material) material.dispose();
+    window.cancelAnimationFrame(fizzleAnimId);
+    disposeGalaxy();
     renderer.dispose();
     scene.clear();
   };

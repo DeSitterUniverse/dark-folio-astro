@@ -13,20 +13,37 @@
 
 <script>
   import { initGalaxyEngine } from "../scripts/galaxyEngine";
+  import {
+    getActiveTheme,
+    THEME_CHANGE_EVENT,
+    type ThemeName,
+  } from "../scripts/themeController";
 
   let cleanup: (() => void) | undefined;
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    cleanup = initGalaxyEngine();
-  });
-  
-  document.addEventListener("astro:page-load", () => {
-    if (cleanup) cleanup();
-    cleanup = initGalaxyEngine();
-  });
+
+  const syncBackground = (theme: ThemeName) =>
+    window.dispatchEvent(
+      new CustomEvent("galaxy:visibility", {
+        detail: { visible: theme === "galaxy" },
+      }),
+    );
+
+  const onThemeChange = (event: Event) =>
+    syncBackground((event as CustomEvent<{ theme: ThemeName }>).detail.theme);
+
+  const initBackground = () => {
+    window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange);
+    window.addEventListener(THEME_CHANGE_EVENT, onThemeChange);
+    if (!cleanup) cleanup = initGalaxyEngine();
+    syncBackground(getActiveTheme());
+  };
+
+  document.addEventListener("DOMContentLoaded", initBackground);
+  document.addEventListener("astro:page-load", initBackground);
   
   document.addEventListener("astro:before-swap", () => {
-    if (cleanup) cleanup();
+    window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange);
+    cleanup?.();
   });
 </script>
 

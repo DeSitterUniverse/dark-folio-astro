@@ -1,44 +1,47 @@
 # Skye Ibrahim — Portfolio
 
-A high-performance, dark-minimalist developer portfolio built with **Astro**, **Tailwind CSS**, and **Phosphor Icons**. Designed for speed, accessibility, and a premium interactive experience.
+A dark, editorial developer portfolio built with **Astro**, **Tailwind CSS**, **Three.js**, and **Phosphor Icons**. It combines a readable project-first layout with an optional real-time galaxy merger background.
 
 ---
 
 ## Key Features
 
-- **GPGPU N-Body Galaxy Merger**: A real-time astrophysical simulation running directly in the portfolio background. 
-  - **Hardware Accelerated**: Achieves a locked 60 FPS while rendering and calculating the gravity of over 5,000 individual stars simultaneously by bypassing JavaScript CPU bottlenecks and utilizing raw WebGL/GPGPU processing. Particle counts can be dynamically scaled based on device capabilities.
-  - **Emergent Astrophysics (Violent Relaxation)**: The engine is mathematically strict enough that it naturally replicates complex, real-world astrophysical phenomena without being explicitly scripted. As the rapidly fluctuating gravitational potential scrambles orbital kinetic energy, the two flat spiral disks authentically transform into a featureless elliptical galaxy—a documented process known as violent relaxation.
-  - **True $O(n^2)$ N-Body Mechanics**: Every single star calculates its gravitational attraction against every other star and black hole in the system simultaneously.
-  - **Inelastic Core Collisions**: The central Supermassive Black Holes utilize momentum-conserving inelastic collision logic ($m_1v_1 + m_2v_2$) to fuse into a single entity when crossing the event horizon.
-  - **Dynamical Friction (Chandrasekhar Drag)**: Simulates the gravitational "wake" created by massive bodies moving through a sea of smaller stars, forcing an inevitable, realistic collision.
-  - **Plummer Softening**: Utilizes a gravitational softening parameter ($r^2 + \epsilon^2$) to prevent division-by-zero errors and infinite acceleration spikes during close-quarters stellar encounters.
+- **GPGPU N-Body Galaxy Merger**: A real-time astrophysical simulation that can run behind the portfolio.
+  - **Hardware Accelerated**: Uses WebGL/GPGPU processing to render and calculate thousands of stars at 60 FPS, with adjustable particle counts.
+  - **Emergent Astrophysics**: Models violent relaxation as two spiral systems collide and settle into an elliptical galaxy.
+  - **True $O(n^2)$ N-Body Mechanics**: Every star calculates its gravitational attraction against every other star and black hole.
+  - **Inelastic Core Collisions**: Central black holes use momentum-conserving collision logic when they cross the event horizon.
+  - **Dynamical Friction**: Simulates the gravitational drag that drives the galaxies toward collision.
+  - **Plummer Softening**: Prevents infinite acceleration during close particle encounters.
+  - **Animated Lifecycle**: Particle fizzle transitions handle startup, shutdown, theme changes, and simulation rebuilds.
 
-- **Technical Spec-Sheet**: Professional high-density skills grid with backdrop-blur glassmorphism for maximum readability against the active simulation.
-- **Unified Experience Timeline**: Consolidated career progression showing role-based growth and technical evolution within major tenures.
-- **Dynamic Title Rotation**: Custom typewriter effect seamlessly cycling through technical roles (Data Engineer → Full-Stack Developer → Automation Developer).
-- **Non-Blocking Architecture**: Leverages Astro's Islands Architecture to guarantee that core layouts and typography render instantly with zero JavaScript overhead, deferring the heavy WebGL engine to load asynchronously without blocking the main thread.
+- **Background Theme Selector**: Dark mode is the default. Visitors can enable the galaxy merger from the global selector or directly from its project controls.
+- **Reading Accessibility**: A persistent text-colour selector offers the standard palette or a warmer reading tone, with reduced-motion support and accessible keyboard controls.
+- **Editorial Layout**: A constrained reading width, collapsible project and experience details, and responsive navigation keep long technical content scannable.
+- **Astro Content Collections**: The separate Dark-themed Blog route is ready for typed Markdown or MDX posts.
 
 ## Technology Stack
 
-- **Framework**: [Astro v5.0+](https://astro.build/)
-- **Graphics & Math**: [Three.js](https://threejs.org/) + GLSL (Compute Shaders)
-- **Styling**: [Tailwind CSS v4.0+](https://tailwindcss.com/)
+- **Framework**: [Astro v7](https://astro.build/)
+- **Graphics & Math**: [Three.js](https://threejs.org/) + GLSL compute shaders
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Icons**: [Phosphor Icons](https://phosphoricons.com/)
 - **Language**: TypeScript
-- **Deployment**: Static Site Generation (SSG)
+- **Output**: Static Site Generation (SSG)
 
 ## Project Structure
 
 ```text
 /
 ├── src/
-│   ├── components/       # Reusable UI sections (Experience, Skills, Intro, etc.)
-│   ├── layouts/          # Base Page Layouts (MainLayout.astro)
-│   ├── data/             # Static data for projects and skills
-│   ├── styles/           # Global design tokens and resets
-│   └── pages/            # Page routes (index.astro)
-├── public/               # Static assets (Resume, Favicon)
+│   ├── components/       # Portfolio sections and controls
+│   ├── content/blog/     # Blog posts managed by Astro collections
+│   ├── layouts/          # Shared page layout
+│   ├── pages/            # Portfolio and Blog routes
+│   ├── scripts/          # Theme, controls, and galaxy engine
+│   ├── data/             # Project and skills data
+│   └── styles/           # Global design system
+├── public/               # Résumé and favicon assets
 └── package.json          # Dependencies and scripts
 ```
 
@@ -46,11 +49,11 @@ A high-performance, dark-minimalist developer portfolio built with **Astro**, **
 
 | Command | Action |
 | :--- | :--- |
-| `npm install` | Installs project dependencies |
-| `npm run dev` | Spins up a local development server |
-| `npm run build` | Builds the static site for production |
-| `npm run preview` | Previews the production build locally |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start the local development server |
+| `npm run build` | Build the production site |
+| `npm run preview` | Preview the production build |
 
 ---
 
-*Build by Skye Ibrahim — 2026*
+*Built by Skye Ibrahim — 2026*

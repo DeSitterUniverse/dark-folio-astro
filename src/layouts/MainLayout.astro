@@ -9,25 +9,38 @@ import ParticleBackground from "../components/ParticleBackground.astro";
 import StatsMonitor from "../components/StatsMonitor.astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import Analytics from "@vercel/analytics/astro";
+import "../styles/global.css";
 
 interface Props {
   title: string;
   description?: string;
+  initialTheme?: "galaxy" | "dark";
+  showThemeSelector?: boolean;
 }
 
 const {
   title,
   description = "Skye Ibrahim — Full-Stack Developer & Data Engineer. Building reliable, data-centric systems that prioritize performance, maintainability, and clarity.",
+  initialTheme = "dark",
+  showThemeSelector = true,
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme={initialTheme}>
   <head>
+    <script is:inline>
+      try {
+        const tone = localStorage.getItem("portfolio-text-tone");
+        if (tone === "warm" || tone === "default") {
+          document.documentElement.dataset.textTone = tone;
+        }
+      } catch {}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content={initialTheme === "dark" ? "#121018" : "#000000"} />
     <meta name="color-scheme" content="dark" />
     <meta name="author" content="Skye Ibrahim" />
 
@@ -43,24 +56,34 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
       rel="stylesheet"
     />
 
     <title>{title}</title>
   </head>
   <body class="min-h-screen text-slate-200">
-    <StatsMonitor />
-    <ParticleBackground />
-    <Navbar />
+    {showThemeSelector && <StatsMonitor />}
+    {showThemeSelector && <ParticleBackground />}
+    <Navbar showThemeSelector={showThemeSelector} initialTheme={initialTheme} />
     <slot />
 
     <!-- Vercel Speed Insights & Analytics -->
     <SpeedInsights />
     <Analytics />
 
-    <style>
-      @import "../styles/global.css";
-    </style>
+    <script>
+      import { initializeThemeController } from "../scripts/themeController";
+
+      let cleanupTheme: (() => void) | undefined;
+      const initTheme = () => {
+        cleanupTheme?.();
+        cleanupTheme = initializeThemeController();
+      };
+
+      document.addEventListener("DOMContentLoaded", initTheme);
+      document.addEventListener("astro:page-load", initTheme);
+      document.addEventListener("astro:before-swap", () => cleanupTheme?.());
+    </script>
   </body>
 </html>

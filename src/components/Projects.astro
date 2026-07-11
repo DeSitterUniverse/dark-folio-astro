@@ -1,35 +1,15 @@
 ---
-/**
- * Projects.astro
- * Project showcase section with 3D glow cards.
- * Contains the minimal client-side script for mouse tracking.
- */
 import { projects } from "../data/projects";
 import ProjectCard from "./ProjectCard.astro";
 import InteractiveGalaxyCard from "./InteractiveGalaxyCard.astro";
 ---
 
-<section id="projects" class="relative py-24 sm:py-32">
-  <div class="max-w-6xl mx-auto px-6">
-    <!-- Section header -->
-    <div class="mb-16">
-      <h2 class="font-mono text-sm text-text-muted tracking-widest uppercase mb-3">
-        // projects
-      </h2>
-      <p class="text-2xl sm:text-3xl font-mono font-semibold text-text-primary">
-        Featured Work
-      </p>
-      <div class="mt-4 w-16 h-px bg-accent/40"></div>
-    </div>
-
-    <!-- Project grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <InteractiveGalaxyCard />
-      {projects.map((project) => (
-        <ProjectCard project={project} />
-      ))}
-    </div>
+<section id="projects" class="editorial-section">
+  <header class="section-heading">
+    <h2>Featured</h2>
+  </header>
+  <div class="projects-list">
+    <InteractiveGalaxyCard />
+    {projects.map((project) => <ProjectCard project={project} />)}
   </div>
 </section>
-
-

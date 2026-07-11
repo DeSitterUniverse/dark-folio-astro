@@ -1,236 +1,88 @@
 ---
-/**
- * InteractiveGalaxyCard.astro
- * Special project card for the background simulation, featuring
- * controls to manipulate the live background via custom window events.
- */
 import GithubLogoLight from "phosphor-astro/GithubLogoLight.astro";
 import PlayLight from "phosphor-astro/PlayLight.astro";
 import PauseLight from "phosphor-astro/PauseLight.astro";
 
-const project = {
-  title: "GPGPU N-Body Galaxy Merger",
-  description:
-    'A high-performance, real-time N-body physics engine running directly in the background of this portfolio. By offloading O(n²) gravitational calculations to the GPU via custom GLSL Compute Shaders, the engine simulates the collision of two galaxies with thousands of individual stars simultaneously at 60 FPS. Featuring accurate orbital mechanics, inelastic black hole mergers, and dynamical friction, the simulation\'s math naturally exhibits emergent behavior. Watch as the rapidly shifting gravitational fields trigger \'<a href="https://academic.oup.com/mnras/article/136/1/101/2602554" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">violent relaxation</a>\', authentically scrambling the stars\' orderly orbits and transforming two flat spiral disks into a sprawling, 3D elliptical galaxy.',
-  tech: ["Astro", "Three.js", "WebGL", "GLSL", "TypeScript"],
-  github:
-    "https://github.com/DeSitterUniverse/dark-folio-astro/blob/master/src/scripts/galaxyEngine.ts",
-};
+const description = 'A high-performance, real-time N-body physics engine running directly in the background of this portfolio. By offloading O(n²) gravitational calculations to the GPU via custom GLSL Compute Shaders, the engine simulates the collision of two galaxies with thousands of individual stars simultaneously at 60 FPS. Featuring accurate orbital mechanics, inelastic black hole mergers, and dynamical friction, the simulation\'s math naturally exhibits emergent behavior. Watch as the rapidly shifting gravitational fields trigger \'<a href="https://academic.oup.com/mnras/article/136/1/101/2602554" target="_blank" rel="noopener noreferrer">violent relaxation</a>\', authentically scrambling the stars\' orderly orbits and transforming two flat spiral disks into a sprawling, 3D elliptical galaxy.';
 ---
 
-<div class="card-perspective">
-  <div class="glow-card">
-    <div class="glow-card-content">
-      <div class="flex items-center justify-between mb-3">
-        <h3
-          class="font-mono text-lg font-semibold text-text-primary tracking-tight"
-        >
-          {project.title}
-        </h3>
-        <div
-          class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20 shrink-0 ml-2"
-        >
-          <span class="relative flex h-2 w-2 shrink-0">
-            <span
-              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-            ></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"
-            ></span>
-          </span>
-          <span
-            class="text-[10px] font-mono text-green-400 uppercase tracking-wider font-semibold whitespace-nowrap"
-            >Live Background</span
-          >
-        </div>
-      </div>
-
-      <p
-        class="text-sm text-text-secondary leading-relaxed mb-5"
-        set:html={project.description}
-      >
-      </p>
-
-      <div class="flex flex-wrap gap-2 mb-6">
-        {
-          project.tech.map((tech) => (
-            <span class="inline-block px-2.5 py-1 rounded-md text-xs font-mono text-accent bg-accent-dim border border-accent/10">
-              {tech}
-            </span>
-          ))
-        }
-      </div>
-
-      <div
-        class="mt-auto p-4 rounded-lg bg-surface/50 border border-border-dim space-y-4"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-mono text-text-primary"
-            >Simulation State</span
-          >
-          <button
-            id="galaxy-pause-btn"
-            class="flex items-center justify-center w-8 h-8 rounded bg-surface border border-border-dim text-accent hover:border-accent hover:bg-accent-dim transition-colors"
-            aria-label="Toggle Pause"
-          >
-            <span id="icon-pause" class=""><PauseLight class="w-4 h-4" /></span>
-            <span id="icon-play" class="hidden"
-              ><PlayLight class="w-4 h-4" />
-            </span>
-          </button>
-        </div>
-
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label
-              for="galaxy-stars-slider"
-              class="text-sm font-mono text-text-primary"
-              >Star Count (Grid Size)</label
-            >
-            <span
-              id="galaxy-stars-value"
-              class="text-xs font-mono text-text-muted">72x72</span
-            >
-          </div>
-          <input
-            type="range"
-            id="galaxy-stars-slider"
-            min="32"
-            max="160"
-            step="8"
-            value="72"
-            class="w-full h-1 rounded-lg appearance-none cursor-pointer accent-accent danger-slider"
-          />
-        </div>
-        <!-- Galaxy Radius Slider -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label
-              for="galaxy-radius-slider"
-              class="text-sm font-mono text-text-primary">Galaxy Radius</label
-            >
-            <span
-              id="galaxy-radius-value"
-              class="text-xs font-mono text-text-muted">35</span
-            >
-          </div>
-          <input
-            type="range"
-            id="galaxy-radius-slider"
-            min="15"
-            max="80"
-            step="1"
-            value="35"
-            class="w-full h-1 bg-border-dim rounded-lg appearance-none cursor-pointer accent-accent"
-          />
-        </div>
-
-        <!-- Spawn Offset Slider -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label
-              for="galaxy-offset-slider"
-              class="text-sm font-mono text-text-primary">Spawn Offset</label
-            >
-            <span
-              id="galaxy-offset-value"
-              class="text-xs font-mono text-text-muted">25</span
-            >
-          </div>
-          <input
-            type="range"
-            id="galaxy-offset-slider"
-            min="10"
-            max="60"
-            step="1"
-            value="25"
-            class="w-full h-1 bg-border-dim rounded-lg appearance-none cursor-pointer accent-accent"
-          />
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4 mt-5 pt-4 border-t border-border-dim">
-        <a
-          href={project.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 text-sm text-text-muted font-mono transition-colors duration-200 hover:text-accent"
-        >
-          <GithubLogoLight class="w-4 h-4" />
-          Source
-        </a>
-      </div>
-    </div>
+<article class="project-row galaxy-project" data-galaxy-project>
+  <div class="project-heading">
+    <h3>GPGPU N-Body Galaxy Merger</h3>
+    <p>Astro · Three.js · WebGL · GLSL · TypeScript</p>
   </div>
-</div>
+  <div class="project-body">
+    <details class="editorial-details project-description">
+      <summary>Description</summary>
+      <p set:html={description}></p>
+    </details>
 
-<style>
-  .card-perspective {
-    perspective: 1000px;
-  }
-  .glow-card {
-    position: relative;
-    border-radius: 1rem;
-    padding: 1px;
-    background: var(--color-border-dim);
-    transition: background 0.4s ease;
-    overflow: hidden;
-  }
-  .glow-card:hover {
-    background: var(--color-accent);
-  }
-  .glow-card-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    border-radius: calc(1rem - 1px);
-    background: var(--color-surface-card);
-    padding: 1.5rem;
-    min-height: 100%;
-    transition: transform 0.4s ease, background 0.4s ease;
-    will-change: transform;
-    transform: translateZ(0);
-  }
-  .glow-card:hover .glow-card-content {
-    transform: translateZ(16px);
-    background: var(--color-surface-hover);
-  }
-  .danger-slider {
-    /* 
-      set at 128
-      Left side is border color, right side fades into red. 
-    */
-    background: linear-gradient(
-      to right,
-      var(--color-border-dim) 0%,
-      var(--color-border-dim) 75%,
-      rgba(239, 68, 68, 0.3) 75%,
-      /* Soft Tailwind red-500 */ rgba(239, 68, 68, 0.8) 100%
-        /* Stronger red at the very edge */
-    );
-  }
-  input[type="range"] {
-    -webkit-appearance: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 12px;
-    width: 12px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    cursor: pointer;
-    box-shadow: 0 0 10px var(--color-accent-glow);
-  }
-</style>
+    <button type="button" class="galaxy-theme-toggle" data-galaxy-theme-toggle data-action="on">Turn on</button>
+
+    <div class="galaxy-settings" data-galaxy-settings>
+      <div class="setting-row">
+        <span>Simulation State</span>
+        <button id="galaxy-pause-btn" data-galaxy-control aria-label="Toggle Pause">
+          <span id="icon-pause"><PauseLight /></span>
+          <span id="icon-play" class="hidden"><PlayLight /></span>
+        </button>
+      </div>
+      <label>Star Count (Grid Size) <output id="galaxy-stars-value">72x72</output>
+        <input type="range" id="galaxy-stars-slider" data-galaxy-control min="32" max="160" step="8" value="72" />
+      </label>
+      <label>Galaxy Radius <output id="galaxy-radius-value">35</output>
+        <input type="range" id="galaxy-radius-slider" data-galaxy-control min="15" max="80" step="1" value="35" />
+      </label>
+      <label>Spawn Offset <output id="galaxy-offset-value">25</output>
+        <input type="range" id="galaxy-offset-slider" data-galaxy-control min="10" max="60" step="1" value="25" />
+      </label>
+    </div>
+
+    <a class="source-link" href="https://github.com/DeSitterUniverse/dark-folio-astro/blob/master/src/scripts/galaxyEngine.ts" target="_blank" rel="noopener noreferrer">
+      <GithubLogoLight /> Source
+    </a>
+  </div>
+</article>
 
 <script>
-  import { initGalaxyControls } from "../scripts/galaxyControls";
+  import { initGalaxyControls, setGalaxyPaused } from "../scripts/galaxyControls";
+  import { applyTheme, getActiveTheme, THEME_CHANGE_EVENT, type ThemeName } from "../scripts/themeController";
 
-  document.addEventListener("DOMContentLoaded", () => {
-    initGalaxyControls();
-  });
+  const syncGalaxyProject = (theme: ThemeName) => {
+    const enabled = theme === "galaxy";
+    document.querySelectorAll<HTMLInputElement | HTMLButtonElement>("[data-galaxy-control]").forEach((control) => {
+      control.disabled = !enabled;
+    });
+    document.querySelector<HTMLElement>("[data-galaxy-project]")?.setAttribute("data-live", String(enabled));
+    const themeToggle = document.querySelector<HTMLButtonElement>("[data-galaxy-theme-toggle]");
+    if (themeToggle) {
+      themeToggle.textContent = enabled ? "Turn off" : "Turn on";
+      themeToggle.dataset.action = enabled ? "off" : "on";
+    }
+    if (enabled) setGalaxyPaused(false);
+  };
 
-  document.addEventListener("astro:page-load", () => {
+  const onThemeChange = (event: Event) =>
+    syncGalaxyProject((event as CustomEvent<{ theme: ThemeName }>).detail.theme);
+
+  const init = () => {
     initGalaxyControls();
-  });
+    const themeToggle = document.querySelector<HTMLButtonElement>("[data-galaxy-theme-toggle]");
+    if (themeToggle && !themeToggle.dataset.loaded) {
+      themeToggle.dataset.loaded = "true";
+      themeToggle.addEventListener("click", () => {
+        const darkSelected =
+          getActiveTheme() === "dark" ||
+          document.documentElement.dataset.pendingTheme === "dark";
+        applyTheme(darkSelected ? "galaxy" : "dark");
+      });
+    }
+    window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange);
+    window.addEventListener(THEME_CHANGE_EVENT, onThemeChange);
+    syncGalaxyProject(getActiveTheme());
+  };
+
+  document.addEventListener("DOMContentLoaded", init);
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", () => window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange));
 </script>

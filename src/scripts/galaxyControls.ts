@@ -10,13 +10,26 @@ if (typeof window !== "undefined" && typeof window.galaxyIsPaused === "undefined
   window.galaxyIsPaused = false;
 }
 
+const renderPauseState = () => {
+  const iconPause = document.getElementById("icon-pause");
+  const iconPlay = document.getElementById("icon-play");
+  iconPause?.classList.toggle("hidden", Boolean(window.galaxyIsPaused));
+  iconPlay?.classList.toggle("hidden", !window.galaxyIsPaused);
+};
+
+export const setGalaxyPaused = (paused: boolean) => {
+  window.galaxyIsPaused = paused;
+  renderPauseState();
+  window.dispatchEvent(
+    new CustomEvent("galaxy:pause", { detail: { paused } }),
+  );
+};
+
 // 2. Define the function that wires up the buttons and slider
 export const initGalaxyControls = () => {
   if (typeof document === "undefined") return;
 
   const btn = document.getElementById("galaxy-pause-btn");
-  const iconPause = document.getElementById("icon-pause");
-  const iconPlay = document.getElementById("icon-play");
   const slider = document.getElementById(
     "galaxy-stars-slider"
   ) as HTMLInputElement;
@@ -27,31 +40,10 @@ export const initGalaxyControls = () => {
   if (btn && !btn.hasAttribute("data-loaded")) {
     btn.setAttribute("data-loaded", "true");
 
-    // Sync UI on load
-    if (window.galaxyIsPaused) {
-      iconPause?.classList.add("hidden");
-      iconPlay?.classList.remove("hidden");
-    } else {
-      iconPause?.classList.remove("hidden");
-      iconPlay?.classList.add("hidden");
-    }
+    renderPauseState();
 
     btn.addEventListener("click", () => {
-      window.galaxyIsPaused = !window.galaxyIsPaused;
-
-      if (window.galaxyIsPaused) {
-        iconPause?.classList.add("hidden");
-        iconPlay?.classList.remove("hidden");
-      } else {
-        iconPause?.classList.remove("hidden");
-        iconPlay?.classList.add("hidden");
-      }
-
-      window.dispatchEvent(
-        new CustomEvent("galaxy:pause", {
-          detail: { paused: window.galaxyIsPaused },
-        })
-      );
+      setGalaxyPaused(!window.galaxyIsPaused);
     });
   }
 
