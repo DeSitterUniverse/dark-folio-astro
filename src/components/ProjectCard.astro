@@ -4,13 +4,7 @@ import GithubLogoLight from "phosphor-astro/GithubLogoLight.astro";
 
 interface Props { project: Project }
 const { project } = Astro.props;
-const linkIndex = project.descriptionLink
-  ? project.description.indexOf(project.descriptionLink.text)
-  : -1;
-const before = linkIndex >= 0 ? project.description.slice(0, linkIndex) : project.description;
-const after = linkIndex >= 0 && project.descriptionLink
-  ? project.description.slice(linkIndex + project.descriptionLink.text.length)
-  : "";
+const descriptionParagraphs = project.description.split("\n\n");
 ---
 
 <article class="project-row">
@@ -21,13 +15,23 @@ const after = linkIndex >= 0 && project.descriptionLink
   <div class="project-body">
     <details class="editorial-details project-description">
       <summary>Description</summary>
-      <p>
-        {before}
-        {linkIndex >= 0 && project.descriptionLink && (
-          <a href={project.descriptionLink.url} target="_blank" rel="noopener noreferrer">{project.descriptionLink.text}</a>
-        )}
-        {after}
-      </p>
+      {descriptionParagraphs.map((paragraph) => {
+        const linkIndex = project.descriptionLink ? paragraph.indexOf(project.descriptionLink.text) : -1;
+        const before = linkIndex >= 0 ? paragraph.slice(0, linkIndex) : paragraph;
+        const after = linkIndex >= 0 && project.descriptionLink
+          ? paragraph.slice(linkIndex + project.descriptionLink.text.length)
+          : "";
+
+        return (
+          <p>
+            {before}
+            {linkIndex >= 0 && project.descriptionLink && (
+              <a href={project.descriptionLink.url} target="_blank" rel="noopener noreferrer">{project.descriptionLink.text}</a>
+            )}
+            {after}
+          </p>
+        );
+      })}
     </details>
     <a class="source-link" href={project.github} target="_blank" rel="noopener noreferrer">
       <GithubLogoLight /> Source
