@@ -25,4 +25,12 @@ const posts = (Object.keys(blogFiles).length > 0 ? await getCollection("blog") :
       ))}
     </div>
   )}
+  {posts.length === 0 && (
+    <p class="blog-empty">
+      My current writing is still taking shape. Until it is ready to share, I recommend
+      {" "}<a href="https://semianalysis.com/" target="_blank" rel="noopener noreferrer">SemiAnalysis</a>,
+      {" "}<a href="https://chipsandcheese.com/" target="_blank" rel="noopener noreferrer">Chips and Cheese</a>, and
+      {" "}<a href="https://danluu.com/" target="_blank" rel="noopener noreferrer">danluu.com</a>.
+    </p>
+  )}
 </section>
