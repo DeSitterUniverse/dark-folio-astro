@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "typecheck": "tsc --noEmit",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@types/stats.js": "^0.17.4",
-    "@types/three": "^0.184.0"
+    "@types/three": "^0.184.0",
+    "typescript": "^7.0.2"
   }
 }
