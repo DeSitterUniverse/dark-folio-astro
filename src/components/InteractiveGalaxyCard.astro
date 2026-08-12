@@ -3,7 +3,7 @@ import GithubLogoLight from "phosphor-astro/GithubLogoLight.astro";
 import PlayLight from "phosphor-astro/PlayLight.astro";
 import PauseLight from "phosphor-astro/PauseLight.astro";
 
-const description = 'A real-time galaxy merger simulation built with WebGPU, WGSL, TypeScript, and Astro. Each galaxy contains a live stellar disk, dark-matter halo, and compact core, allowing the whole system to exchange energy and angular momentum as the encounter develops. Leapfrog integration and selectable all-pairs or Barnes-Hut gravity support stable evolution across a wide range of particle counts.<br><br>The simulation follows a bound, inclined encounter from first approach through core coalescence and remnant formation. Live disks and halos respond collectively as energy and angular momentum move through the system, producing tidal bridges, extended tails, halo wakes, and a disturbed three-dimensional remnant. Seeded initial conditions keep comparisons repeatable while the controls vary particle resolution, disk scale, and starting separation.';
+const description = 'A live galaxy merger where two complete particle systems pull each other apart and reshape themselves in real time. Stellar disks stretch into long tidal tails, invisible halos absorb the impact, compact cores spiral together, and the final remnant emerges from the motion of every simulated body.<br><br>WebGPU keeps the simulation on the graphics card and gives the engine low-level control over memory, parallel work, and rendering. Custom WGSL compute pipelines combine leapfrog integration with selectable exact all-pairs or Barnes-Hut gravity, scaling from detailed comparisons to more than one million interacting particles directly in the browser.';
 ---
 
 <article class="project-row galaxy-project" data-galaxy-project>
@@ -34,7 +34,7 @@ const description = 'A real-time galaxy merger simulation built with WebGPU, WGS
       </fieldset>
       <output id="galaxy-backend-status" class="galaxy-runtime-status" aria-live="polite" hidden>Idle</output>
       <label>Particle Count (Grid Size) <output id="galaxy-stars-value">72x72</output>
-        <input type="range" id="galaxy-stars-slider" data-galaxy-control min="56" max="160" step="8" value="72" />
+        <input type="range" id="galaxy-stars-slider" data-galaxy-control min="56" max="184" step="8" value="72" />
       </label>
       <label>Disk Radius <output id="galaxy-radius-value">35</output>
         <input type="range" id="galaxy-radius-slider" data-galaxy-control min="15" max="80" step="1" value="35" />

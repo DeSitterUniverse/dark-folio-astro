@@ -231,7 +231,9 @@ html[data-theme="galaxy"] .galaxy-settings { display: grid; gap: 18px; }
   background-size: 100% 100%, 300% 100%;
 }
 .galaxy-project .source-link { display: flex; width: max-content; }
-#galaxy-stars-slider { height: 4px; border-radius: 999px; background: linear-gradient(to right, var(--color-border) 0%, var(--color-border) 75%, rgba(239,68,68,.32) 75%, rgba(239,68,68,.88) 100%); appearance: none; }
+#galaxy-stars-slider { height: 4px; border-radius: 999px; appearance: none; }
+#galaxy-stars-slider[data-solver-risk="all-pairs"] { background: linear-gradient(to right, var(--color-border) 0%, var(--color-border) 56.25%, rgba(239,68,68,.34) 56.25%, rgba(239,68,68,.9) 100%); }
+#galaxy-stars-slider[data-solver-risk="barnes-hut"] { background: linear-gradient(to right, var(--color-border) 0%, var(--color-border) 20.66%, rgba(239,68,68,.34) 20.66%, rgba(239,68,68,.48) 47.11%, rgba(239,68,68,.95) 47.11%, rgba(239,68,68,.95) 100%); }
 
 .site-footer { width: calc(100% - var(--rail-width)); max-width: none; margin-left: var(--rail-width); padding: 0; background: rgba(12, 11, 16, 0.78); }
 html[data-theme="dark"] .site-footer { background: rgba(26, 22, 35, 0.72); }
