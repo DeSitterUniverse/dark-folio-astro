@@ -1,0 +1,3 @@
+[submodule "vendor/webgpu-galaxy-merger"]
+	path = vendor/webgpu-galaxy-merger
+	url = https://github.com/DeSitterUniverse/webgpu-galaxy-merger.git

@@ -201,7 +201,17 @@ html[data-theme="galaxy"] .galaxy-settings { display: grid; gap: 18px; }
 .setting-row, .galaxy-settings label { display: grid; grid-template-columns: 1fr auto; gap: 10px; color: var(--color-text-secondary); font: 0.75rem var(--font-mono); }
 .setting-row button { display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface-card); color: var(--color-accent); cursor: pointer; }
 .setting-row svg { width: 16px; height: 16px; }
+.galaxy-solver-selector { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.galaxy-solver-selector legend { grid-column: 1 / -1; margin-bottom: 3px; color: var(--color-text-secondary); font: 0.75rem var(--font-mono); }
+.galaxy-solver-selector button { min-width: 0; padding: 8px 5px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface-card); color: var(--color-text-muted); font: 0.66rem var(--font-mono); cursor: pointer; }
+.galaxy-solver-selector button[aria-pressed="true"] { border-color: var(--color-accent); background: rgba(170, 145, 186, 0.16); color: var(--color-accent-bright); }
 .galaxy-settings input { grid-column: 1 / -1; width: 100%; accent-color: var(--color-accent); }
+.galaxy-runtime-status { color: #ffb4a8; font: 0.7rem/1.45 var(--font-mono); }
+.galaxy-diagnostics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; margin: 4px 0 0; padding-top: 16px; border-top: 1px dashed var(--color-border-dim); }
+.galaxy-diagnostics div { display: grid; grid-template-columns: 1fr auto; gap: 10px; min-width: 0; }
+.galaxy-diagnostics dt { color: var(--color-text-muted); }
+.galaxy-diagnostics dd { min-width: 0; margin: 0; color: var(--color-accent-bright); text-align: right; overflow-wrap: anywhere; }
+.galaxy-diagnostics output { font: 0.68rem/1.4 var(--font-mono); }
 .galaxy-theme-toggle { margin-top: 16px; padding: 10px 15px; border: 1px solid rgba(240, 139, 114, 0.72); border-radius: 7px; background: rgba(240, 139, 114, 0.12); color: #f0a08c; font: 500 0.75rem var(--font-mono); cursor: pointer; animation: galaxy-cta-pulse 2.4s ease-in-out infinite; transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
 .galaxy-theme-toggle:hover { border-color: #f0a08c; background: rgba(240, 139, 114, 0.22); color: #ffd2c7; transform: translateY(-1px); }
 .galaxy-theme-toggle[data-action="on"] {
@@ -283,6 +293,8 @@ html[data-theme="dark"] #stats-container { opacity: 0; pointer-events: none; }
   .about-section { min-height: 70vh; }
   .skill-category ul { grid-template-columns: 1fr; gap: 14px; }
   html[data-theme="galaxy"] .galaxy-project { margin-inline: -12px; padding: 24px 18px; }
+  .galaxy-diagnostics { grid-template-columns: 1fr; }
+  #stats-container { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
