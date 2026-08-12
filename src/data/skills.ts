@@ -23,7 +23,7 @@ export const skillCategories: SkillCategory[] = [
   },
   {
     title: "Automation & Tools",
-    items: ["UiPath (RPA)", "Data Pipelines", "ETL/ELT", "ONNX Runtime", "Kibana", "SMSS/Oracle SQL Developer"],
+    items: ["UiPath (RPA)", "Data Pipelines", "ETL/ELT", "Agentic AI", "Kibana", "SMSS/Oracle SQL Developer"],
   },
   {
     title: "Data & Analytics",
