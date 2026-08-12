@@ -29,8 +29,8 @@ const description = 'A live galaxy merger where two complete particle systems pu
       </div>
       <fieldset class="galaxy-solver-selector" aria-label="Gravity solver">
         <legend>Gravity Solver</legend>
-        <button type="button" data-galaxy-control data-galaxy-solver="all-pairs" aria-pressed="true">All-Pairs</button>
-        <button type="button" data-galaxy-control data-galaxy-solver="barnes-hut" aria-pressed="false">Barnes-Hut</button>
+        <button type="button" data-galaxy-control data-galaxy-solver="all-pairs" aria-pressed="true">All-Pairs (O(n²))</button>
+        <button type="button" data-galaxy-control data-galaxy-solver="barnes-hut" aria-pressed="false">Barnes-Hut (O(n log n))</button>
       </fieldset>
       <output id="galaxy-backend-status" class="galaxy-runtime-status" aria-live="polite" hidden>Idle</output>
       <label>Particle Count (Grid Size) <output id="galaxy-stars-value">72x72</output>
