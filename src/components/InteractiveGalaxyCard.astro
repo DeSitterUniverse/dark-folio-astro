@@ -3,13 +3,13 @@ import GithubLogoLight from "phosphor-astro/GithubLogoLight.astro";
 import PlayLight from "phosphor-astro/PlayLight.astro";
 import PauseLight from "phosphor-astro/PauseLight.astro";
 
-const description = 'A high-performance, real-time N-body physics engine running directly in the background of this portfolio. By offloading O(n²) gravitational calculations to the GPU via custom GLSL Compute Shaders, the engine simulates the collision of two galaxies with thousands of individual stars simultaneously at 60 FPS. Featuring accurate orbital mechanics, inelastic black hole mergers, and dynamical friction, the simulation\'s math naturally exhibits emergent behavior. Watch as the rapidly shifting gravitational fields trigger \'<a href="https://academic.oup.com/mnras/article/136/1/101/2602554" target="_blank" rel="noopener noreferrer">violent relaxation</a>\', authentically scrambling the stars\' orderly orbits and transforming two flat spiral disks into a sprawling, 3D elliptical galaxy.';
+const description = 'A real-time galaxy merger simulation built with WebGPU, WGSL, TypeScript, and Astro. Each galaxy contains a live stellar disk, dark-matter halo, and compact core, allowing the whole system to exchange energy and angular momentum as the encounter develops. Leapfrog integration and selectable all-pairs or Barnes-Hut gravity support stable evolution across a wide range of particle counts.<br><br>The simulation follows a bound, inclined encounter from first approach through core coalescence and remnant formation. Live disks and halos respond collectively as energy and angular momentum move through the system, producing tidal bridges, extended tails, halo wakes, and a disturbed three-dimensional remnant. Seeded initial conditions keep comparisons repeatable while the controls vary particle resolution, disk scale, and starting separation.';
 ---
 
 <article class="project-row galaxy-project" data-galaxy-project>
   <div class="project-heading">
     <h3>GPGPU N-Body Galaxy Merger</h3>
-    <p>Astro · Three.js · WebGL · GLSL · TypeScript</p>
+    <p>Astro · WebGPU · WGSL · TypeScript</p>
   </div>
   <div class="project-body">
     <details class="editorial-details project-description">
@@ -27,25 +27,35 @@ const description = 'A high-performance, real-time N-body physics engine running
           <span id="icon-play" class="hidden"><PlayLight /></span>
         </button>
       </div>
-      <label>Star Count (Grid Size) <output id="galaxy-stars-value">72x72</output>
-        <input type="range" id="galaxy-stars-slider" data-galaxy-control min="32" max="160" step="8" value="72" />
+      <fieldset class="galaxy-solver-selector" aria-label="Gravity solver">
+        <legend>Gravity Solver</legend>
+        <button type="button" data-galaxy-control data-galaxy-solver="all-pairs" aria-pressed="true">All-Pairs</button>
+        <button type="button" data-galaxy-control data-galaxy-solver="barnes-hut" aria-pressed="false">Barnes-Hut</button>
+      </fieldset>
+      <output id="galaxy-backend-status" class="galaxy-runtime-status" aria-live="polite" hidden>Idle</output>
+      <label>Particle Count (Grid Size) <output id="galaxy-stars-value">72x72</output>
+        <input type="range" id="galaxy-stars-slider" data-galaxy-control min="56" max="160" step="8" value="72" />
       </label>
-      <label>Galaxy Radius <output id="galaxy-radius-value">35</output>
+      <label>Disk Radius <output id="galaxy-radius-value">35</output>
         <input type="range" id="galaxy-radius-slider" data-galaxy-control min="15" max="80" step="1" value="35" />
       </label>
-      <label>Spawn Offset <output id="galaxy-offset-value">25</output>
+      <label>Initial Center Offset <output id="galaxy-offset-value">25</output>
         <input type="range" id="galaxy-offset-slider" data-galaxy-control min="10" max="60" step="1" value="25" />
       </label>
+      <dl class="galaxy-diagnostics" aria-label="Live merger statistics">
+        <div><dt>Simulation Time</dt><dd><output id="galaxy-time-value">0.00</output></dd></div>
+        <div><dt>Core Separation</dt><dd><output id="galaxy-core-separation-value">—</output></dd></div>
+      </dl>
     </div>
 
-    <a class="source-link" href="https://github.com/DeSitterUniverse/dark-folio-astro/blob/master/src/scripts/galaxyEngine.ts" target="_blank" rel="noopener noreferrer">
+    <a class="source-link" href="https://github.com/DeSitterUniverse/webgpu-galaxy-merger" target="_blank" rel="noopener noreferrer">
       <GithubLogoLight /> Source
     </a>
   </div>
 </article>
 
 <script>
-  import { initGalaxyControls, setGalaxyPaused } from "../scripts/galaxyControls";
+  import { initGalaxyControls, setGalaxyPaused } from "../../vendor/webgpu-galaxy-merger/src/galaxyControls";
   import { applyTheme, getActiveTheme, THEME_CHANGE_EVENT, type ThemeName } from "../scripts/themeController";
 
   const syncGalaxyProject = (theme: ThemeName) => {

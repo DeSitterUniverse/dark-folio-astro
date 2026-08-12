@@ -1,8 +1,7 @@
 ---
 /**
  * ParticleBackground.astro
- * True N-Body Dual Galaxy Merger.
- * Features: Dynamical Friction, Inelastic Core Mergers, and Softened Gravity.
+ * WebGPU N-body dual-galaxy merger background.
  */
 ---
 
@@ -12,7 +11,7 @@
   aria-hidden="true"></canvas>
 
 <script>
-  import { initGalaxyEngine } from "../scripts/galaxyEngine";
+  import { initGalaxyEngine } from "../../vendor/webgpu-galaxy-merger/src/galaxyEngine";
   import {
     getActiveTheme,
     THEME_CHANGE_EVENT,
