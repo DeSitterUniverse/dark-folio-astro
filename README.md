@@ -1,14 +1,10 @@
-# Skye Ibrahim — Portfolio
-
-A dark, editorial developer portfolio built with **Astro**, **Tailwind CSS**, and **Phosphor Icons**. It presents professional experience, technical projects, tools, and writing in a responsive project-first layout.
+My personal website and portfolio
 
 ---
 
-## Key Features
+Accessibility:
+Off-white (`#E9E4DA`) or a warmer light peach (`#F7D6C8`) text colours, with reduced-motion support and accessible keyboard controls.
 
-- **Theme Controls**: Persistent dark colour options let visitors adjust the presentation without disrupting navigation or content state.
-- **Reading Accessibility**: A persistent text-colour selector offers the standard off-white (`#E9E4DA`) or a warmer reading tone (`#F7D6C8`), with reduced-motion support and accessible keyboard controls.
-- **Editorial Layout**: A constrained reading width, collapsible project and experience details, and responsive navigation keep long technical content scannable.
 
 ## Technology Stack
 
