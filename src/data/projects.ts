@@ -33,8 +33,8 @@ export const projects: Project[] = [
   {
     title: "ssd-flash-id",
     description:
-      "Ported and extended the open-source ssd-flash-id project for Windows, preserving its controller and NAND identification logic while implementing native Windows NVMe/ATA transports, hardware discovery, safety enforcement, diagnostics, and compatibility improvements.",
-    tech: ["Rust", "Windows API", "Systems Programming", "FFI"],
+      "Brought the open-source ssd-flash-id hardware utility from Linux to Windows, allowing users to identify SSD controllers and NAND flash without relying on a Linux environment. The port focused on making low-level drive inspection practical and reliable on Windows, with native device discovery, permission handling, safer probing, clearer diagnostics, and improved compatibility across different SSDs and storage configurations.\n\nUnder the hood, the project was refactored to separate platform-specific storage transports while preserving the existing controller and NAND identification logic. I implemented native Win32 NVMe and ATA pass-through, physical-drive enumeration, StorNVMe vendor-command validation, storage-adapter fallback, aligned protocol packet construction, UAC elevation checks, configurable command timeouts, response/status validation, and Windows system error reporting.",
+    tech: ["Rust", "Win32 API", "NVMe / ATA", "Systems Programming"],
     github: "https://github.com/DeSitterUniverse/ssd-flash-id",
   },
 ];
