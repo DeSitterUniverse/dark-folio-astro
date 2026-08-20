@@ -37,7 +37,7 @@ The portfolio includes the
 repository as a pinned Git submodule. Clone it with:
 
 ```bash
-git clone --recurse-submodules https://github.com/DeSitterUniverse/dark-folio-astro.git
+git clone --recurse-submodules https://github.com/DeSitterUniverse/Anti-de-Sitter-space.git
 ```
 
 For an existing clone, run `git submodule update --init --recursive` before installing dependencies.
