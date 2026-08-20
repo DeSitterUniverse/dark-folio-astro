@@ -6,14 +6,6 @@ Accessibility:
 Off-white (`#E9E4DA`) or a warmer light peach (`#F7D6C8`) text colours, with reduced-motion support and accessible keyboard controls.
 
 
-## Technology Stack
-
-- **Framework**: [Astro v7](https://astro.build/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Icons**: [Phosphor Icons](https://phosphoricons.com/)
-- **Language**: TypeScript
-- **Output**: Static Site Generation (SSG)
-
 ## Project Structure
 
 ```text
@@ -50,7 +42,3 @@ For an existing clone, run `git submodule update --init --recursive` before inst
 | `npm run dev` | Start the local development server |
 | `npm run build` | Build the production site |
 | `npm run preview` | Preview the production build |
-
----
-
-*Built by Skye Ibrahim — 2026*
