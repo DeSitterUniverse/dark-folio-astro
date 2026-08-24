@@ -37,4 +37,11 @@ export const projects: Project[] = [
     tech: ["Rust", "Win32 API", "NVMe / ATA", "Systems Programming"],
     github: "https://github.com/DeSitterUniverse/ssd-flash-id",
   },
+  {
+    title: "Adaptive OLED Clock",
+    description:
+      "Adaptive OLED Clock is a native Windows desktop clock for OLED displays. It keeps the time visible in a transparent, click-through overlay while varying its position so exposure is not concentrated in one fixed area. Built with C++20, Win32, Direct2D, and DirectWrite, it supports configurable time formats, typography, opacity, monitor selection, movement modes, brightness boosts, fullscreen hiding, and tray controls.\n\nThe app tracks coarse exposure history independently for each monitor and uses that history when choosing future positions (exposure based heuristic).",
+    tech: ["C++20", "Win32 API", "Direct2D / DirectWrite", "CMake"],
+    github: "https://github.com/DeSitterUniverse/Adaptive-OLED-Clock",
+  },
 ];
